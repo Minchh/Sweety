@@ -180,6 +180,7 @@ export async function signout(req, res) {
 	});
 }
 
+// Forgot password
 export async function forgotPassword(req, res) {
 	const { email } = req.body;
 
@@ -225,6 +226,7 @@ export async function forgotPassword(req, res) {
 	}
 }
 
+// Reset password
 export async function resetPassword(req, res) {
 	try {
 		const { token } = req.params;
@@ -262,6 +264,36 @@ export async function resetPassword(req, res) {
 			data: null,
 		});
 	} catch (err) {
+		res.status(500).json({
+			code: 500,
+			status: "error",
+			message: err.message,
+		});
+	}
+}
+
+// Check authentication
+export async function checkAuth(req, res) {
+	try {
+		const user = await User.findById(req.userId).select("-password");
+		if (!user) {
+			res.status(400).json({
+				code: 400,
+				status: "fail",
+				message: "User not found",
+			});
+			return;
+		}
+
+		res.status(200).json({
+			code: 200,
+			status: "success",
+			data: {
+				user,
+			},
+		});
+	} catch (err) {
+		console.log("Error in checkAuth ", err);
 		res.status(500).json({
 			code: 500,
 			status: "error",
