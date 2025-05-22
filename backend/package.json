@@ -4,16 +4,19 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "start": "node src/server",
+    "dev": "nodemon src/server"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mailtrap": "^4.1.0",
     "mongoose": "^8.15.0",
     "qs": "^6.14.0"
   },
