@@ -7,6 +7,7 @@ import {
 } from "../../utils/index.js";
 import { sendVerificationEmail, sendWelcomeEmail } from "../../config/index.js";
 
+// Sign-up
 export async function signup(req, res) {
 	const { email, password, firstName, lastName } = req.body;
 
@@ -62,13 +63,14 @@ export async function signup(req, res) {
 	}
 }
 
+// Verify email
 export async function verifyEmail(req, res) {
 	// 6 digits code: 1 2 3 4 5 6
 	const { code } = req.body;
-    
+
 	try {
 		const user = await User.findOne({
-            verificationToken: code,
+			verificationToken: code,
 			verificationTokenExpiresAt: { $gt: Date.now() },
 		});
 
@@ -81,7 +83,7 @@ export async function verifyEmail(req, res) {
 			return;
 		}
 
-        // Set isVerified to true, and "remove" token from user
+		// Set isVerified to true, and "remove" token from user
 		user.isVerified = true;
 		user.verificationToken = undefined;
 		user.verificationTokenExpiresAt = undefined;
@@ -109,6 +111,65 @@ export async function verifyEmail(req, res) {
 	}
 }
 
-export async function signin(req, res) {}
+// Sign-in
+export async function signin(req, res) {
+	const { email, password } = req.body;
 
-export async function signout(req, res) {}
+	try {
+		const user = await User.findOne({ email });
+
+		if (!user) {
+			res.status(400).json({
+				code: 400,
+				status: "fail",
+				message: "Invalid credentials",
+			});
+			return;
+		}
+
+		const isPasswordValid = await brcypt.compare(password, user.password);
+		if (!isPasswordValid) {
+			res.status(400).json({
+				code: 400,
+				status: "fail",
+				message: "Invalid credentials",
+			});
+			return;
+		}
+
+		// Refresh a new JWT
+		generateTokenAndSetCookie(res, user._id);
+
+		user.lastLogin = new Date();
+		await user.save();
+
+		res.status(200).json({
+			code: 200,
+			status: "success",
+			message: "Logged in successfully",
+			data: {
+				user: {
+					...user._doc,
+					password: undefined,
+				},
+			},
+		});
+	} catch (err) {
+		res.status(500).json({
+			code: 500,
+			status: "error",
+			message: err.message,
+		});
+	}
+}
+
+// Sign-out
+export async function signout(req, res) {
+	res.clearCookie("token");
+	res.status(200).json({
+		code: 200,
+		status: "success",
+		message: "Logged out successfully",
+		data: null,
+	});
+}
