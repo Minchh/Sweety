@@ -1,11 +1,17 @@
 import brcypt from "bcrypt";
+import crypto from "crypto";
 
+import { appConfig } from "../../config/index.js";
 import { User } from "../models/index.js";
 import {
 	generateTokenAndSetCookie,
 	generateVerificationToken,
 } from "../../utils/index.js";
-import { sendVerificationEmail, sendWelcomeEmail } from "../../config/index.js";
+import {
+	sendVerificationEmail,
+	sendWelcomeEmail,
+	sendPasswordResetEmail,
+} from "../../config/index.js";
 
 // Sign-up
 export async function signup(req, res) {
@@ -172,4 +178,94 @@ export async function signout(req, res) {
 		message: "Logged out successfully",
 		data: null,
 	});
+}
+
+export async function forgotPassword(req, res) {
+	const { email } = req.body;
+
+	try {
+		const user = await User.findOne({ email });
+
+		if (!user) {
+			res.status(400).json({
+				code: 400,
+				status: "fail",
+				message: "User not found",
+			});
+			return;
+		}
+
+		// Generate reset token
+		const resetToken = crypto.randomBytes(20).toString("hex");
+		const resetTokenExpresAt = Date.now() + 15 * 60 * 1000; // 15 minutes
+
+		user.resetPasswordToken = resetToken;
+		user.resetPasswordExpiresAt = resetTokenExpresAt;
+
+		await user.save();
+
+		// Send email
+		await sendPasswordResetEmail(
+			user.email,
+			`${appConfig.clientURL}/password-reset/${resetToken}`
+		);
+
+		res.status(200).json({
+			code: 200,
+			status: "success",
+			message: "Password reset link sent to your email",
+			data: null,
+		});
+	} catch (err) {
+		res.status(500).json({
+			code: 500,
+			status: "error",
+			message: err.message,
+		});
+	}
+}
+
+export async function resetPassword(req, res) {
+	try {
+		const { token } = req.params;
+		const { password } = req.body;
+
+		const user = await User.findOne({
+			resetPasswordToken: token,
+			resetPasswordExpiresAt: { $gt: Date.now },
+		});
+
+		if (!user) {
+			res.status(400).json({
+				code: 400,
+				status: "fail",
+				message: "Invalid or expired reset token",
+			});
+			return;
+		}
+
+		// Update password
+		const hashedPassword = await brcypt.hash(password, 10);
+
+		user.password = hashedPassword;
+		user.resetPasswordToken = undefined;
+		user.resetPasswordExpiresAt = undefined;
+
+		await user.save();
+
+		await sendResetSuccessEmail(user.email);
+
+		res.status(200).json({
+			code: 200,
+			status: "success",
+			message: "Password reset successful",
+			data: null,
+		});
+	} catch (err) {
+		res.status(500).json({
+			code: 500,
+			status: "error",
+			message: err.message,
+		});
+	}
 }

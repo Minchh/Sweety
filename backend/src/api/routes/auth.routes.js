@@ -16,4 +16,11 @@ authRouter.route("/signout")
 authRouter.route("/email-verification")
     .post(authController.verifyEmail);
 
+authRouter.route("/password-forgot")
+    .post(authController.forgotPassword);
+
+authRouter.route("/password-reset/:token")
+    .post(authController.resetPassword);
+
+
 export default authRouter;
