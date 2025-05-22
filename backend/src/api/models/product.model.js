@@ -15,6 +15,7 @@ const productSchema = new mongoose.Schema(
 			type: String,
 			trim: true,
 		},
+        price: Number,
 		available: Boolean,
 		stock: Number,
 		size: [
@@ -30,7 +31,6 @@ const productSchema = new mongoose.Schema(
 	}
 );
 
-
-const Product = new mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema);
 
 export default Product;
