@@ -1,26 +1,24 @@
-import { mailtrapClient, sender } from "../../config/mailtrap/mailtrap.config.js";
+import { transporter, emailConfig } from "../../config/index.js";
 import {
 	PASSWORD_RESET_REQUEST_TEMPLATE,
 	PASSWORD_RESET_SUCCESS_TEMPLATE,
 	VERIFICATION_EMAIL_TEMPLATE,
+	WELCOME_EMAIL_TEMPLATE,
 } from "./emailTemplates.js";
 
 export async function sendVerificationEmail(email, verificationToken) {
-	const recipient = [{ email }];
-
 	try {
-		const response = await mailtrapClient.send({
-			from: sender,
-			to: recipient,
+		const info = await transporter.sendMail({
+			from: emailConfig.email,
+			to: email,
 			subject: "[Sweety] Verify your email",
 			html: VERIFICATION_EMAIL_TEMPLATE.replace(
 				"{verificationCode}",
 				verificationToken
 			),
-			category: "Email Verification",
 		});
 
-		console.log("Email sent successfully", response);
+		console.log("Email sent successfully: ", info.messageId);
 	} catch (err) {
 		console.error(`Error sending 'verification email'`, err);
 		throw new Error(`Error sending 'verification email': ${err}`);
@@ -28,20 +26,18 @@ export async function sendVerificationEmail(email, verificationToken) {
 }
 
 export async function sendWelcomeEmail(email, firstName, lastName) {
-	const recipient = [{ email }];
-
 	try {
-		const response = await mailtrapClient.send({
-			from: sender,
-			to: recipient,
-			template_uuid: "585fc2fc-5ec0-4142-bade-c8095f4a886a",
-			template_variables: {
-				company_info_name: "Sweety",
-				name: `${firstName} ${lastName}`,
-			},
+		const info = await transporter.sendMail({
+			from: emailConfig.email,
+			to: email,
+			subject: "[Sweety] Welcome to Sweety",
+			html: WELCOME_EMAIL_TEMPLATE.replace(
+				"{firstName} {lastName}",
+				`${firstName} ${lastName}`
+			),
 		});
 
-		console.log("Welcome email sent successfully", response);
+		console.log("Welcome email sent successfully: ", info.messageId);
 	} catch (err) {
 		console.error(`Error sending 'welcome email'`, err);
 		throw new Error(`Error sending 'welcome email': ${err}`);
@@ -49,21 +45,18 @@ export async function sendWelcomeEmail(email, firstName, lastName) {
 }
 
 export async function sendPasswordResetEmail(email, resetURL) {
-	const recipient = [{ email }];
-
 	try {
-		const response = await mailtrapClient.send({
-			from: sender,
-			to: recipient,
+		const info = await transporter.sendMail({
+			from: emailConfig.email,
+			to: email,
 			subject: "[Sweety] Reset Password",
 			html: PASSWORD_RESET_REQUEST_TEMPLATE.replace(
 				"{resetURL}",
 				resetURL
 			),
-			category: "Password Reset",
 		});
 
-		console.log("Reset password email sent successfully", response);
+		console.log("Reset password email sent successfully: ", info.messageId);
 	} catch (err) {
 		console.log("Error sending 'password reset email'", err);
 
@@ -72,20 +65,17 @@ export async function sendPasswordResetEmail(email, resetURL) {
 }
 
 export async function sendResetSuccessEmail(email) {
-	const recipient = [{ email }];
-
 	try {
-		const response = await mailtrapClient.send({
-			from: sender,
-			to: recipient,
+		const info = await transporter.sendMail({
+			from: emailConfig.email,
+			to: email,
 			subject: "Password Reset Successful",
 			html: PASSWORD_RESET_SUCCESS_TEMPLATE,
-			category: "Password Reset",
 		});
 
 		console.log(
-			"Reset password successfully email sent successfully",
-			response
+			"Reset password successfully email sent successfully: ",
+			info.messageId
 		);
 	} catch (err) {
 		console.log("Error sending 'Reset password successfully email'", err);

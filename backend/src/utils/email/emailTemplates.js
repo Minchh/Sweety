@@ -35,6 +35,42 @@ export const VERIFICATION_EMAIL_TEMPLATE = `
 </html>
 `;
 
+export const WELCOME_EMAIL_TEMPLATE = `
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Welcome to Sweety</title>
+	</head>
+
+	<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+		<div style="background: linear-gradient(to right, #ffb8c8, #ff9eb5); padding: 20px; text-align: center;">
+			<h1 style="color: white; margin: 0;">Welcome to Sweety!</h1>
+		</div>
+
+		<div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+			<p>Hello, {firstName} {lastName}</p>
+			<p>Yay! Your email has been successfully verified, and we’re so excited to welcome you to the sweetest spot in town – <strong>Sweety Bakery</strong>!</p>
+			<p>Your journey into the world of delightful desserts, handcrafted pastries, and irresistible candies begins now.</p>
+			<p>Here’s what you can look forward to:</p>
+			<ul>
+				<li>Exclusive access to our latest treats and seasonal specials</li>
+				<li>Early-bird offers on cakes, cupcakes, cookies, and more</li>
+				<li>Sweet surprises straight to your inbox</li>
+			</ul>
+			<p>Ready to satisfy your sweet tooth? Visit our shop or browse our menu online for your next indulgence.</p>
+			<p>Thanks for joining our community of dessert lovers!</p>
+			<p>With sugar and smiles,<br><strong>Sweety</strong></p>
+		</div>
+
+		<div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+			<p>This is an automated message, please do not reply to this email.</p>
+		</div>
+	</body>
+</html>
+`;
+
 export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
 <!DOCTYPE html>
 <html lang="en">

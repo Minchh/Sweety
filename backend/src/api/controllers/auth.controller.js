@@ -11,7 +11,8 @@ import {
 	sendVerificationEmail,
 	sendWelcomeEmail,
 	sendPasswordResetEmail,
-} from "../../config/index.js";
+	sendResetSuccessEmail,
+} from "../../utils/index.js";
 
 // Sign-up
 export async function signup(req, res) {
@@ -128,7 +129,7 @@ export async function signin(req, res) {
 			res.status(400).json({
 				code: 400,
 				status: "fail",
-				message: "Invalid credentials",
+				message: "Email or password is incorrect",
 			});
 			return;
 		}
@@ -138,7 +139,7 @@ export async function signin(req, res) {
 			res.status(400).json({
 				code: 400,
 				status: "fail",
-				message: "Invalid credentials",
+				message: "Email or password is incorrect",
 			});
 			return;
 		}
@@ -234,7 +235,7 @@ export async function resetPassword(req, res) {
 
 		const user = await User.findOne({
 			resetPasswordToken: token,
-			resetPasswordExpiresAt: { $gt: Date.now },
+			resetPasswordExpiresAt: { $gt: Date.now() },
 		});
 
 		if (!user) {
