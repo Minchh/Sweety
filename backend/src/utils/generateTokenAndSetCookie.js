@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
-import { appConfig } from "../config/app.config.js";
+import { appConfig } from "../config/index.js";
 
+// Generate Token and set to Cookie
 export function generateTokenAndSetCookie(res, userId) {
 	const token = jwt.sign({ userId }, appConfig.secret, { expiresIn: "7d" }); // 7 days
 

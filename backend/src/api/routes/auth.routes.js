@@ -26,5 +26,4 @@ authRouter.route("/password-forgot")
 authRouter.route("/password-reset/:token")
     .post(authController.resetPassword);
 
-
 export default authRouter;

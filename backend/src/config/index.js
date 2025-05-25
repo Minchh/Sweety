@@ -1,5 +1,5 @@
-import { appConfig } from "./app.config.js";
-import { dbConfig, connectDB } from "./db.config.js";
+import { appConfig } from "./app/app.config.js";
+import { dbConfig, connectDB } from "./db/db.config.js";
 import { transporter, emailConfig } from "./email/email.config.js";
 
 
