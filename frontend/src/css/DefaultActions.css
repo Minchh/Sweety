@@ -1,0 +1,39 @@
+.navbar-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: center;
+}
+
+.navbar-actions .login-action {
+    display: inline-block;
+    min-width: 6.25rem;
+    padding: 0.6rem 1.4rem;
+    color: #ebc6a8;
+    border: 1px solid #ebc6a8;
+    border-radius: 10px;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.navbar-actions .login-action:hover {
+    border-color: #f0f0f0;
+    color: #f0f0f0;
+    cursor: pointer;
+}
+
+.navbar-actions .signup-action {
+    display: inline-block;
+    min-width: 6.25rem;
+    padding: 0.6rem 1.4rem;
+    color: #f0f0f0;
+    background-color: #ebc6a8;
+    border: 1px solid #ebc6a8;
+    border-radius: 10px;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.navbar-actions .signup-action:hover {
+    background-color: transparent;
+    color: #f0f0f0;
+    border-color: #f0f0f0   ;
+}
