@@ -1,0 +1,11 @@
+.navbar-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: center;
+}
+
+.navbar-actions li {
+    color: #f0f0f0;
+    cursor: pointer;
+}

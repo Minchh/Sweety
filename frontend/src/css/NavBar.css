@@ -1,0 +1,20 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    font-family: "Poppins", sans-serif;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    padding-top: 2rem;
+}
+
+.navbar-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-brand img {
+    display: block;
+    max-width: 7rem;
+    width: 100%;
+}
