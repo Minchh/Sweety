@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import "../css/pages/Products.css";
 
@@ -9,9 +9,9 @@ import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
 
 function Products() {
+    // Filter
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(12.0);
-
     const handleSliderChange = (value, isMin) => {
         if (isMin) {
             if (value > maxPrice) {
@@ -30,6 +30,15 @@ function Products() {
         }
     };
 
+    // Search & Sort
+    const [isOpen, setIsOpen] = useState(false);
+    const [selected, setSelected] = useState("Sort by Name");
+    const options = ["Sort by Name", "Sort by Price"];
+    const handleSelect = (option) => {
+        setSelected(option);
+        setIsOpen(false);
+    };
+
     return (
         <>
             <title>Products | Sweety </title>
@@ -44,11 +53,44 @@ function Products() {
                                 <FontAwesomeIcon icon={faSearch} />
                                 <input type="search" placeholder="Search" />
                             </div>
-                            <div className="sort-container">
-                                <input
-                                    type="search"
-                                    placeholder="Sort by Name"
-                                />
+                            <div className="dropdown-container">
+                                <FontAwesomeIcon icon={faCaretDown} />
+                                <button
+                                    onClick={() => setIsOpen(!isOpen)}
+                                    className={`dropdown-button ${
+                                        isOpen ? "dropdown-button--open" : ""
+                                    }`}
+                                >
+                                    {selected}
+                                </button>
+
+                                {isOpen && (
+                                    <div className="dropdown-menu">
+                                        {options.map((option, index) => (
+                                            <button
+                                                key={option}
+                                                onClick={() =>
+                                                    handleSelect(option)
+                                                }
+                                                className={`dropdown-option ${
+                                                    index === 0
+                                                        ? "dropdown-option--first"
+                                                        : ""
+                                                } ${
+                                                    index === options.length - 1
+                                                        ? "dropdown-option--last"
+                                                        : ""
+                                                } ${
+                                                    selected === option
+                                                        ? "dropdown-option--selected"
+                                                        : ""
+                                                }`}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

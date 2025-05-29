@@ -37,7 +37,6 @@ function Login() {
                         <Input
                             icon={faEnvelope}
                             type="text"
-                            placeholder="Email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
@@ -46,7 +45,6 @@ function Login() {
                         <Input
                             icon={faKey}
                             type="password"
-                            placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
@@ -54,17 +52,17 @@ function Login() {
                         <div className="login-options">
                             <div className="login-remember">
                                 <input id="rememberMe" type="checkbox" />
-                                <label htmlFor="rememberMe">Remember Me</label>
+                                <label htmlFor="rememberMe">Remember me</label>
                             </div>
 
-                            <a href="#">Forgot password?</a>
+                            <a href="/password-forgot">Forgot password?</a>
                         </div>
 
-                        <button className="login-button">Sign up</button>
+                        <button className="login-button">Sign In</button>
                     </form>
 
                     <p className="login-no-account">
-                        Don't have an account? <a href="#">Sign up</a>
+                        Don't have an account? <a href="/signup">Sign up</a>
                     </p>
                 </div>
             </div>
