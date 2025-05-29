@@ -84,7 +84,7 @@ function Products() {
                     <div className="filter">
                         <h4 className="filter-title">FILTER BY PRICE</h4>
 
-                        <div class="slider-container">
+                        <div className="slider-container">
                             <div className="slider-track"></div>
                             <div
                                 className="slider-range"
@@ -112,7 +112,7 @@ function Products() {
                             <input
                                 type="range"
                                 min="0"
-                                max="11.53"
+                                max="12.00"
                                 value={maxPrice}
                                 step="0.01"
                                 className="slider"
@@ -125,7 +125,7 @@ function Products() {
                             />
                         </div>
 
-                        <div class="price-display">
+                        <div className="price-display">
                             Price: ${minPrice.toFixed(2)} - $
                             {maxPrice.toFixed(2)}
                         </div>

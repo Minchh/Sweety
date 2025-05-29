@@ -18,8 +18,10 @@ function Login() {
         <>
             <title>Login | Sweety</title>
 
-            <div className="page-container">
-                <img className="logo" src={sweetyLogo} alt="Sweety Logo" />
+            <div className="page-container login-container">
+                <a href="/home">
+                    <img className="logo" src={sweetyLogo} alt="Sweety Logo" />
+                </a>
 
                 <div className="login-modal">
                     <div className="login-title">
