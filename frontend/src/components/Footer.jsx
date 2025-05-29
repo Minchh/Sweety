@@ -1,4 +1,4 @@
-import "../css/Footer.css";
+import "../css/components/Footer.css";
 import sweetyLogo from "../assets/sweety-logo.svg";
 
 function Footer() {

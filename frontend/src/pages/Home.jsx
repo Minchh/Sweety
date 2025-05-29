@@ -1,4 +1,4 @@
-import "../css/Home.css";
+import "../css/pages/Home.css";
 
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";

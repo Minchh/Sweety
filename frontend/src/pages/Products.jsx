@@ -3,7 +3,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import "../css/Products.css";
+import "../css/pages/Products.css";
 
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
@@ -32,6 +32,8 @@ function Products() {
 
     return (
         <>
+            <title>Products | Sweety </title>
+
             <div className="page-container">
                 <NavBar />
 
@@ -142,9 +144,7 @@ function Products() {
                             </div>
                         </div>
 
-                        <div className="list">
-
-                        </div>
+                        <div className="list"></div>
                     </div>
                 </section>
 

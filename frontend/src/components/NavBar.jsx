@@ -1,4 +1,4 @@
-import "../css/NavBar.css";
+import "../css/components/NavBar.css";
 
 import sweetyLogo from "../assets/sweety-logo.svg";
 import Links from "./Links.jsx";

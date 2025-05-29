@@ -1,8 +1,5 @@
-function ProductCard() {
+function ProductCard({ product }) {
 
-    return (
-        
-    );
 }
 
 export default ProductCard;
