@@ -1,26 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 import "../css/pages/Signup.css";
 import sweetyLogo from "../assets/sweety-logo.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faEnvelope,
     faKey,
     faPhone,
     faUser,
+    faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 
 import Input from "../components/Input.jsx";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter.jsx";
 
+import { useAuthStore } from "../store/authStore.js";
+
 function Signup() {
-    const [email, setEmail] = useState("");
-    const [fullname, setFullname] = useState("");
+    const [fullName, setFullName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const handleSignUp = (e) => {
+    const navigate = useNavigate();
+
+    const { signup, error, isLoading, clearError } = useAuthStore();
+
+    useEffect(() => {
+        clearError();
+    }, [clearError]);
+
+    const handleInputChange = (setter) => (e) => {
+        if (error) clearError();
+        setter(e.target.value);
+    };
+
+    const handleSignUp = async (e) => {
         e.preventDefault();
+        try {
+            await signup(
+                fullName,
+                phoneNumber,
+                email,
+                password,
+                confirmPassword
+            );
+            navigate("/email-verification");
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (
@@ -37,17 +67,13 @@ function Signup() {
                         <h2>Sign Up</h2>
                     </div>
 
-                    <form
-                        className="signup-form"
-                        action="POST"
-                        onSubmit={handleSignUp}
-                    >
+                    <form className="signup-form" onSubmit={handleSignUp}>
                         <label htmlFor="">Full Name</label>
                         <Input
                             icon={faUser}
                             type="text"
-                            value={fullname}
-                            onChange={(e) => setFullname(e.target.value)}
+                            value={fullName}
+                            onChange={handleInputChange(setFullName)}
                         />
 
                         <label htmlFor="">Phone Number</label>
@@ -55,7 +81,7 @@ function Signup() {
                             icon={faPhone}
                             type="phone"
                             value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            onChange={handleInputChange(setPhoneNumber)}
                         />
 
                         <label htmlFor="">Email</label>
@@ -63,7 +89,7 @@ function Signup() {
                             icon={faEnvelope}
                             type="text"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={handleInputChange(setEmail)}
                         />
 
                         <label htmlFor="">Password</label>
@@ -71,7 +97,7 @@ function Signup() {
                             icon={faKey}
                             type="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={handleInputChange(setPassword)}
                         />
                         <PasswordStrengthMeter password={password} />
 
@@ -80,10 +106,25 @@ function Signup() {
                             icon={faKey}
                             type="password"
                             value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            onChange={handleInputChange(setConfirmPassword)}
                         />
 
-                        <button type="submit" className="signup-button">Sign Up</button>
+                        {error && <p className="error-message">{error}</p>}
+
+                        <button
+                            type="submit"
+                            className="signup-button"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <FontAwesomeIcon
+                                    className="loading"
+                                    icon={faSpinner}
+                                />
+                            ) : (
+                                "Sign Up"
+                            )}
+                        </button>
                     </form>
 
                     <p className="signup-account">

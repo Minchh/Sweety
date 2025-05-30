@@ -1,13 +1,15 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
-import { connectDB } from "./config/index.js"
+import { appConfig, connectDB } from "./config/index.js"
 import { authRouter, productRouter } from "./api/routes/index.js";
 
 const app = express();
 
 // Middlewares
+app.use(cors({ origin: appConfig.clientURL, credentials: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 

@@ -54,6 +54,27 @@
     transition: all 0.2s ease;
 }
 
+.error-message {
+    font-size: 0.75rem;
+    color: #fb2c36;
+    font-weight: 400;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+}
+
+.loading {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .verify-button {
     width: 100%;
     padding: 0.75rem;
