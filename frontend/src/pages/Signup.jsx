@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import Input from "../components/Input.jsx";
+import PasswordStrengthMeter from "../components/PasswordStrengthMeter.jsx";
 
 function Signup() {
     const [email, setEmail] = useState("");
@@ -72,6 +73,7 @@ function Signup() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        <PasswordStrengthMeter password={password} />
 
                         <label htmlFor="">Confirm Password</label>
                         <Input
