@@ -9,6 +9,7 @@ import ContactUs from "./pages/ContactUs.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import PasswordForgot from "./pages/PasswordForgot.jsx";
+import EmailVerification from "./pages/EmailVerification";
 
 const router = createBrowserRouter([
     {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
     {
         path: "/password-forgot",
         Component: PasswordForgot,
+    },
+    {
+        path: "/email-verification",
+        Component: EmailVerification,
     },
 ]);
 

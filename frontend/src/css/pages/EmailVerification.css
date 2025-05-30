@@ -1,0 +1,67 @@
+.email-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: "Poppins", sans-serif;
+}
+
+.card {
+    background-color: rgba(8, 9, 11, 0.3);
+    backdrop-filter: blur(7.5px);
+    border-radius: 16px;
+    padding: 2.25rem 2rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: max-content;
+    text-align: center;
+}
+
+.title {
+    font-weight: 400;
+    font-size: 1.5rem;
+    text-align: center;
+    background-image: linear-gradient(to right, #ebc6a8 41.3%, #f0f0f0 56.57%);
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #f0f0f0;
+    font-size: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.input-container {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.input {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: transparent;
+    border: 2px solid #ebc6a8;
+    color: #f0f0f0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.verify-button {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f0f0f0;
+    transition: all 0.2s ease;
+    margin-bottom: 1.25rem;
+}
