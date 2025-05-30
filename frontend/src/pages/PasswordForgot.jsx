@@ -1,37 +1,38 @@
 import { useState } from "react";
 
-import "../css/pages/Login.css";
+import "../css/pages/PasswordForgot.css";
 import sweetyLogo from "../assets/sweety-logo.svg";
 import { faEnvelope, faKey } from "@fortawesome/free-solid-svg-icons";
 
 import Input from "../components/Input.jsx";
 
-function Login() {
+function PasswordForgot() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const handleLogin = (e) => {
+    const handlePasswordForgot = (e) => {
         e.preventDefault();
     };
 
     return (
         <>
-            <title>Login | Sweety</title>
+            <title>Forgot Password | Sweety</title>
 
-            <div className="page-container login-container">
+            <div className="page-container password-forgot-container">
                 <a href="/home">
                     <img className="logo" src={sweetyLogo} alt="Sweety Logo" />
                 </a>
 
-                <div className="login-modal">
-                    <div className="login-title">
-                        <h2>Login</h2>
+                <div className="password-forgot-modal">
+                    <div className="password-forgot-title">
+                        <h2>Forgot Password</h2>
                     </div>
 
                     <form
-                        className="login-form"
+                        className="password-forgot-form"
                         action="POST"
-                        onSubmit={handleLogin}
+                        onSubmit={handlePasswordForgot}
                     >
                         <label htmlFor="">Email</label>
                         <Input
@@ -41,7 +42,7 @@ function Login() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
 
-                        <label htmlFor="">Password</label>
+                        <label htmlFor="">New Password</label>
                         <Input
                             icon={faKey}
                             type="password"
@@ -49,25 +50,25 @@ function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
 
-                        <div className="login-options">
-                            <div className="login-remember">
-                                <input id="rememberMe" type="checkbox" />
-                                <label htmlFor="rememberMe">Remember me</label>
-                            </div>
+                        <label htmlFor="">Confirm New Password</label>
+                        <Input
+                            icon={faKey}
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
 
-                            <a href="/password-forgot">Forgot password?</a>
-                        </div>
-
-                        <button type="submit" className="login-button">Sign In</button>
+                        <button
+                            type="submit"
+                            className="password-forgot-button"
+                        >
+                            Change Password
+                        </button>
                     </form>
-
-                    <p className="login-no-account">
-                        Don't have an account? <a href="/signup">Sign up</a>
-                    </p>
                 </div>
             </div>
         </>
     );
 }
 
-export default Login;
+export default PasswordForgot;

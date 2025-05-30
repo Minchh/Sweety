@@ -2,7 +2,12 @@ import { useState } from "react";
 
 import "../css/pages/Signup.css";
 import sweetyLogo from "../assets/sweety-logo.svg";
-import { faEnvelope, faKey, faPhone, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+    faEnvelope,
+    faKey,
+    faPhone,
+    faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Input from "../components/Input.jsx";
 
@@ -76,7 +81,7 @@ function Signup() {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
 
-                        <button className="signup-button">Sign Up</button>
+                        <button type="submit" className="signup-button">Sign Up</button>
                     </form>
 
                     <p className="signup-account">

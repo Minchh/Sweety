@@ -1,5 +1,3 @@
-function ProductCard({ product }) {
-
-}
+function ProductCard({ product }) {}
 
 export default ProductCard;
