@@ -8,6 +8,7 @@ import AboutUs from "./pages/AboutUs.jsx";
 import ContactUs from "./pages/ContactUs.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
+import PasswordForgot from "./pages/PasswordForgot.jsx";
 
 const router = createBrowserRouter([
     {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     {
         path: "/signup",
         Component: Signup,
+    },
+    {
+        path: "/password-forgot",
+        Component: PasswordForgot,
     },
 ]);
 

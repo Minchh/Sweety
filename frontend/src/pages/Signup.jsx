@@ -2,9 +2,15 @@ import { useState } from "react";
 
 import "../css/pages/Signup.css";
 import sweetyLogo from "../assets/sweety-logo.svg";
-import { faEnvelope, faKey, faPhone, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+    faEnvelope,
+    faKey,
+    faPhone,
+    faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Input from "../components/Input.jsx";
+import PasswordStrengthMeter from "../components/PasswordStrengthMeter.jsx";
 
 function Signup() {
     const [email, setEmail] = useState("");
@@ -67,6 +73,7 @@ function Signup() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        <PasswordStrengthMeter password={password} />
 
                         <label htmlFor="">Confirm Password</label>
                         <Input
@@ -76,7 +83,7 @@ function Signup() {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
 
-                        <button className="signup-button">Sign Up</button>
+                        <button type="submit" className="signup-button">Sign Up</button>
                     </form>
 
                     <p className="signup-account">

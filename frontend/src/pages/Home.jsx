@@ -13,7 +13,9 @@ function Home() {
                 <section className="hero">
                     <h1 className="hero-title">Basic. Elegant. Delicious</h1>
                     <h2 className="hero-subtitle">Bring the best experience</h2>
-                    <a href="/products" className="hero-btn">ORDER NOW</a>
+                    <a href="/products" className="hero-btn">
+                        ORDER NOW
+                    </a>
                 </section>
                 <Footer />
             </div>
