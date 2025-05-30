@@ -3,6 +3,8 @@
     background: transparent;
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+    flex-basis: 25%;
 }
 
 .product-image-container {

@@ -230,8 +230,8 @@
 
 .price-slider::-webkit-slider-thumb {
     appearance: none;
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.75rem;
+    height: 0.75rem;
     border-radius: 50%;
     background: #ebc6a8;
     cursor: pointer;
@@ -292,10 +292,14 @@
 
 /* Products Grid */
 .products-grid {
-    height: 1000px;
-    display: grid;
+    min-height: 900px;
+    /* display: grid;
     grid-template-columns: repeat(auto-fill, 250px);
+    grid-template-rows: auto;
     row-gap: 1rem;
-    column-gap: 2rem;
+    column-gap: 2rem; */
+    display: flex;
+    flex-flow: row wrap;
     justify-content: space-between;
+    align-content: flex-start;
 }
