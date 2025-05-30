@@ -1,4 +1,4 @@
-import "../css/Home.css";
+import "../css/pages/Home.css";
 
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
@@ -13,7 +13,7 @@ function Home() {
                 <section className="hero">
                     <h1 className="hero-title">Basic. Elegant. Delicious</h1>
                     <h2 className="hero-subtitle">Bring the best experience</h2>
-                    <button className="hero-btn">ORDER NOW</button>
+                    <a href="/products" className="hero-btn">ORDER NOW</a>
                 </section>
                 <Footer />
             </div>

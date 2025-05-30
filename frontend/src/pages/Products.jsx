@@ -1,17 +1,17 @@
 import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import "../css/Products.css";
+import "../css/pages/Products.css";
 
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
 
 function Products() {
+    // Filter
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(12.0);
-
     const handleSliderChange = (value, isMin) => {
         if (isMin) {
             if (value > maxPrice) {
@@ -30,8 +30,19 @@ function Products() {
         }
     };
 
+    // Search & Sort
+    const [isOpen, setIsOpen] = useState(false);
+    const [selected, setSelected] = useState("Sort by Name");
+    const options = ["Sort by Name", "Sort by Price"];
+    const handleSelect = (option) => {
+        setSelected(option);
+        setIsOpen(false);
+    };
+
     return (
         <>
+            <title>Products | Sweety </title>
+
             <div className="page-container">
                 <NavBar />
 
@@ -42,11 +53,44 @@ function Products() {
                                 <FontAwesomeIcon icon={faSearch} />
                                 <input type="search" placeholder="Search" />
                             </div>
-                            <div className="sort-container">
-                                <input
-                                    type="search"
-                                    placeholder="Sort by Name"
-                                />
+                            <div className="dropdown-container">
+                                <FontAwesomeIcon icon={faCaretDown} />
+                                <button
+                                    onClick={() => setIsOpen(!isOpen)}
+                                    className={`dropdown-button ${
+                                        isOpen ? "dropdown-button--open" : ""
+                                    }`}
+                                >
+                                    {selected}
+                                </button>
+
+                                {isOpen && (
+                                    <div className="dropdown-menu">
+                                        {options.map((option, index) => (
+                                            <button
+                                                key={option}
+                                                onClick={() =>
+                                                    handleSelect(option)
+                                                }
+                                                className={`dropdown-option ${
+                                                    index === 0
+                                                        ? "dropdown-option--first"
+                                                        : ""
+                                                } ${
+                                                    index === options.length - 1
+                                                        ? "dropdown-option--last"
+                                                        : ""
+                                                } ${
+                                                    selected === option
+                                                        ? "dropdown-option--selected"
+                                                        : ""
+                                                }`}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -82,7 +126,7 @@ function Products() {
                     <div className="filter">
                         <h4 className="filter-title">FILTER BY PRICE</h4>
 
-                        <div class="slider-container">
+                        <div className="slider-container">
                             <div className="slider-track"></div>
                             <div
                                 className="slider-range"
@@ -110,7 +154,7 @@ function Products() {
                             <input
                                 type="range"
                                 min="0"
-                                max="11.53"
+                                max="12.00"
                                 value={maxPrice}
                                 step="0.01"
                                 className="slider"
@@ -123,7 +167,7 @@ function Products() {
                             />
                         </div>
 
-                        <div class="price-display">
+                        <div className="price-display">
                             Price: ${minPrice.toFixed(2)} - $
                             {maxPrice.toFixed(2)}
                         </div>
@@ -142,9 +186,7 @@ function Products() {
                             </div>
                         </div>
 
-                        <div className="list">
-
-                        </div>
+                        <div className="list"></div>
                     </div>
                 </section>
 
