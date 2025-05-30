@@ -1,24 +1,56 @@
 import mongoose from "mongoose";
+import validator from "validator";
 
 const userSchema = new mongoose.Schema(
     {
         email: {
             type: String,
             unique: true,
+            lowercase: true,
             trim: true,
-            required: true,
+            validate: {
+                validator: validator.isEmail,
+                message: (props) => `${props.value} is not a valid email!`,
+            },
+            required: [true, "User email required"],
+            index: true,
+        },
+        phoneNumber: {
+            type: String,
+            validate: {
+                validator: function (v) {
+                    return validator.isMobilePhone(v, "any", {
+                        strictMode: false,
+                    });
+                },
+                message: (props) =>
+                    `${props.value} is not a valid phone number!`,
+            },
+            required: [true, "User phone number required"],
+        },
+        fullName: {
+            type: String,
+            trim: true,
+            minlength: [2, "Full name must be at least 2 characters"],
+            maxlength: [50, "Full name cannot exceed 50 characters"],
+            required: [true, "User full name required"],
         },
         password: {
             type: String,
-            required: true,
-        },
-        firstName: {
-            type: String,
-            required: true,
-        },
-        lastName: {
-            type: String,
-            required: true,
+            required: [true, "User password is required"],
+            minlength: [6, "Password must be at least 6 characters"],
+            validate: {
+                validator: function (password) {
+                    const hasUpper = /[A-Z]/.test(password);
+                    const hasLower = /[a-z]/.test(password);
+                    const hasNumber = /\d/.test(password);
+                    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+                    return hasUpper && hasLower && hasNumber && hasSpecial;
+                },
+                message:
+                    "Password must contain uppercase, lowercase, number, and special character",
+            },
         },
         lastLogin: {
             type: Date,

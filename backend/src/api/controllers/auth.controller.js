@@ -15,12 +15,58 @@ import {
 } from "../../utils/index.js";
 
 // Sign-up
+function validatePassword(password) {
+    const criteria = [
+        { test: password.length >= 6, message: "At least 6 characters" },
+        { test: /[A-Z]/.test(password), message: "Contains uppercase letter" },
+        { test: /[a-z]/.test(password), message: "Contains lowercase letter" },
+        { test: /\d/.test(password), message: "Contains a number" },
+        {
+            test: /[^A-Za-z0-9]/.test(password),
+            message: "Contains special character",
+        },
+    ];
+
+    const errors = criteria.filter((c) => !c.test).map((c) => c.message);
+
+    return {
+        isValid: errors.length === 0,
+        errors,
+    };
+}
+
 export async function signup(req, res) {
-    const { email, password, firstName, lastName } = req.body;
+    const { fullName, phoneNumber, email, password, confirmPassword } =
+        req.body;
 
     try {
-        if (!email || !password || !firstName || !lastName) {
+        if (
+            !fullName ||
+            !phoneNumber ||
+            !email ||
+            !password ||
+            !confirmPassword
+        ) {
             throw new Error("All fields are required");
+        }
+
+        if (password !== confirmPassword) {
+            res.status(400).json({
+                code: 400,
+                status: "fail",
+                message: "Passwords do not match",
+            });
+            return;
+        }
+
+        const passwordValidation = validatePassword(password);
+        if (!passwordValidation.isValid) {
+            return res.status(400).json({
+                code: 400,
+                status: "fail",
+                message: "Password does not meet requirements",
+                errors: passwordValidation.errors,
+            });
         }
 
         const userAlreadyExists = await User.findOne({ email });
@@ -37,10 +83,10 @@ export async function signup(req, res) {
         const verificationToken = generateVerificationToken();
 
         const user = await User.create({
+            fullName: fullName,
+            phoneNumber: phoneNumber,
             email: email,
             password: hashedPassword,
-            firstName: firstName,
-            lastName: lastName,
             verificationToken,
             verificationTokenExpiresAt: Date.now() + 15 * 60 * 1000, // 15 minutes
         });
@@ -96,7 +142,7 @@ export async function verifyEmail(req, res) {
         user.verificationTokenExpiresAt = undefined;
         await user.save();
 
-        await sendWelcomeEmail(user.email, user.firstName, user.lastName);
+        await sendWelcomeEmail(user.email, user.fullName);
 
         res.status(200).json({
             code: 200,
@@ -231,7 +277,7 @@ export async function forgotPassword(req, res) {
 export async function resetPassword(req, res) {
     try {
         const { token } = req.params;
-        const { password } = req.body;
+        const { newPassword } = req.body;
 
         const user = await User.findOne({
             resetPasswordToken: token,
@@ -248,7 +294,7 @@ export async function resetPassword(req, res) {
         }
 
         // Update password
-        const hashedPassword = await brcypt.hash(password, 10);
+        const hashedPassword = await brcypt.hash(newPassword, 12);
 
         user.password = hashedPassword;
         user.resetPasswordToken = undefined;

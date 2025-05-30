@@ -46,6 +46,14 @@
     color: transparent;
 }
 
+.error-message {
+    font-size: 0.75rem;
+    color: #fb2c36;
+    font-weight: 400;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+}
+
 .signup-button {
     width: 100%;
     margin-top: 1.25rem;
@@ -66,6 +74,19 @@
     background: transparent;
     border: 1px solid #ebc6a8;
     color: #ebc6a8;
+}
+
+.loading {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .signup-account {

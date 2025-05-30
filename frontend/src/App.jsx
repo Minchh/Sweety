@@ -1,4 +1,5 @@
-import { createBrowserRouter, RouterProvider, useLocation } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import { Toaster } from "react-hot-toast";
 
 import "./css/App.css";
 
@@ -51,7 +52,18 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-    return <RouterProvider router={router} />;
+    return (
+        <>
+            <RouterProvider router={router} />
+            <Toaster
+                toastOptions={{
+                    style: {
+                        fontFamily: "Poppins",
+                    },
+                }}
+            />
+        </>
+    );
 }
 
 export default App;

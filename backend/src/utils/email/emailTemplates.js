@@ -50,7 +50,7 @@ export const WELCOME_EMAIL_TEMPLATE = `
 		</div>
 
 		<div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-			<p>Hello, {firstName} {lastName}</p>
+			<p>Hello, {fullName}</p>
 			<p>Yay! Your email has been successfully verified, and we’re so excited to welcome you to the sweetest spot in town – <strong>Sweety Bakery</strong>!</p>
 			<p>Your journey into the world of delightful desserts, handcrafted pastries, and irresistible candies begins now.</p>
 			<p>Here’s what you can look forward to:</p>

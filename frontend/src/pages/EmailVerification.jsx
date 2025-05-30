@@ -1,17 +1,32 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 import "../css/pages/EmailVerification.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+
+import { useAuthStore } from "../store/authStore.js";
 
 function EmailVerification() {
-    const [code, setCode] = useState(["", "", "", "", "", ""]);
+    const [code, setCode] = useState(["", "", "", "", "", "", ""]);
     const [isComplete, setIsComplete] = useState(false);
     const inputRefs = useRef([]);
+    const navigate = useNavigate();
+
+    const { verifyEmail, error, isLoading, clearError } = useAuthStore();
 
     useEffect(() => {
         setIsComplete(code.every((digit) => digit !== ""));
     }, [code]);
 
+    useEffect(() => {
+        clearError();
+    }, [clearError]);
+
     const handleChange = (index, value) => {
+        if (error) clearError();
+
         // Only allow single digits
         if (value.length > 1) return;
 
@@ -23,7 +38,7 @@ function EmailVerification() {
         setCode(newCode);
 
         // Auto-focus next input
-        if (value && index < 5) {
+        if (value && index < 6) {
             inputRefs.current[index + 1]?.focus();
         }
     };
@@ -39,19 +54,22 @@ function EmailVerification() {
         // Handle arrow keys
         else if (e.key === "ArrowLeft" && index > 0) {
             inputRefs.current[index - 1]?.focus();
-        } else if (e.key === "ArrowRight" && index < 5) {
+        } else if (e.key === "ArrowRight" && index < 6) {
             inputRefs.current[index + 1]?.focus();
         }
     };
 
     const handlePaste = (e) => {
         e.preventDefault();
-        const pastedData = e.clipboardData.getData("text").slice(0, 6);
+
+        if (error) clearError();
+
+        const pastedData = e.clipboardData.getData("text").slice(0, 7);
 
         if (!/^\d+$/.test(pastedData)) return;
 
         const newCode = [...code];
-        for (let i = 0; i < Math.min(pastedData.length, 6); i++) {
+        for (let i = 0; i < Math.min(pastedData.length, 7); i++) {
             newCode[i] = pastedData[i];
         }
         setCode(newCode);
@@ -59,14 +77,19 @@ function EmailVerification() {
         // Focus the next empty input or the last input
         const nextEmptyIndex = newCode.findIndex((digit) => digit === "");
         const focusIndex =
-            nextEmptyIndex === -1 ? 5 : Math.min(nextEmptyIndex, 5);
+            nextEmptyIndex === -1 ? 6 : Math.min(nextEmptyIndex, 6);
         inputRefs.current[focusIndex]?.focus();
     };
 
-    const handleVerify = () => {
+    const handleVerify = async () => {
         const verificationCode = code.join("");
-        alert(`Verification code: ${verificationCode}`);
-        // Here you would typically send the code to your backend
+        try {
+            await verifyEmail(verificationCode);
+            navigate("/home");
+            toast.success("Email verified successfully");
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (
@@ -102,6 +125,8 @@ function EmailVerification() {
                     ))}
                 </div>
 
+                {error && <p className="error-message">{error}</p>}
+
                 <button
                     onClick={handleVerify}
                     disabled={!isComplete}
@@ -112,7 +137,11 @@ function EmailVerification() {
                         opacity: isComplete ? 1 : 0.6,
                     }}
                 >
-                    Verify Email
+                    {isLoading ? (
+                        <FontAwesomeIcon className="loading" icon={faSpinner} />
+                    ) : (
+                        "Verify Email"
+                    )}
                 </button>
             </div>
         </div>
