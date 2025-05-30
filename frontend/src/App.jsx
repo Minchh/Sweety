@@ -4,6 +4,10 @@ import "./css/App.css";
 
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
+import AboutUs from "./pages/AboutUs.jsx";
+import ContactUs from "./pages/ContactUs.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +21,22 @@ const router = createBrowserRouter([
     {
         path: "/products",
         Component: Products,
+    },
+    {
+        path: "/about-us",
+        Component: AboutUs,
+    },
+    {
+        path: "/contact-us",
+        Component: ContactUs,
+    },
+    {
+        path: "/login",
+        Component: Login,
+    },
+    {
+        path: "/signup",
+        Component: Signup,
     },
 ]);
 

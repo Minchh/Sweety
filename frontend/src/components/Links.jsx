@@ -1,4 +1,4 @@
-import "../css/Links.css";
+import "../css/components/Links.css";
 
 function Links() {
     return (

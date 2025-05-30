@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
-import "../css/LoginActions.css";
+import "../css/components/LoginActions.css";
 
 function LoginActions() {
     return (
