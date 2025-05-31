@@ -15,26 +15,6 @@ import {
 } from "../../utils/index.js";
 
 // Sign-up
-function validatePassword(password) {
-    const criteria = [
-        { test: password.length >= 6, message: "At least 6 characters" },
-        { test: /[A-Z]/.test(password), message: "Contains uppercase letter" },
-        { test: /[a-z]/.test(password), message: "Contains lowercase letter" },
-        { test: /\d/.test(password), message: "Contains a number" },
-        {
-            test: /[^A-Za-z0-9]/.test(password),
-            message: "Contains special character",
-        },
-    ];
-
-    const errors = criteria.filter((c) => !c.test).map((c) => c.message);
-
-    return {
-        isValid: errors.length === 0,
-        errors,
-    };
-}
-
 export async function signup(req, res) {
     const { fullName, phoneNumber, email, password, confirmPassword } =
         req.body;
@@ -57,16 +37,6 @@ export async function signup(req, res) {
                 message: "Passwords do not match",
             });
             return;
-        }
-
-        const passwordValidation = validatePassword(password);
-        if (!passwordValidation.isValid) {
-            return res.status(400).json({
-                code: 400,
-                status: "fail",
-                message: "Password does not meet requirements",
-                errors: passwordValidation.errors,
-            });
         }
 
         const userAlreadyExists = await User.findOne({ email });

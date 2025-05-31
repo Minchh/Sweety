@@ -1,4 +1,4 @@
-import { transporter, emailConfig } from "../../config/index.js";
+import { transporter, emailConfig, appConfig } from "../../config/index.js";
 import {
     PASSWORD_RESET_REQUEST_TEMPLATE,
     PASSWORD_RESET_SUCCESS_TEMPLATE,
@@ -31,7 +31,10 @@ export async function sendWelcomeEmail(email, fullName) {
             from: emailConfig.email,
             to: email,
             subject: "[Sweety] Welcome to Sweety",
-            html: WELCOME_EMAIL_TEMPLATE.replace("{fullName}", `${fullName}`),
+            html: WELCOME_EMAIL_TEMPLATE.replace(
+                "{fullName}",
+                `${fullName}`
+            ).replace("{homePageUrl}", `${appConfig.clientURL}/`),
         });
 
         console.log("Welcome email sent successfully: ", info.messageId);
@@ -50,7 +53,7 @@ export async function sendPasswordResetEmail(email, resetURL) {
             html: PASSWORD_RESET_REQUEST_TEMPLATE.replace(
                 "{resetURL}",
                 resetURL
-            ),
+            ).replace("{resetURL}", resetURL),
         });
 
         console.log("Reset password email sent successfully: ", info.messageId);
