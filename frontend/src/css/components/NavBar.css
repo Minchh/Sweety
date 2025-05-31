@@ -7,6 +7,10 @@
     padding-top: 2rem;
 }
 
+.navbar > *:last-child {
+    transition: opacity 0.2s ease-in-out;
+}
+
 .navbar-brand {
     display: flex;
     justify-content: center;

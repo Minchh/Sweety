@@ -2,16 +2,21 @@ import { useState } from "react";
 
 import "../css/pages/Login.css";
 import sweetyLogo from "../assets/sweety-logo.svg";
-import { faEnvelope, faKey } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faKey, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import Input from "../components/Input.jsx";
+import { useAuthStore } from "../store/authStore.js";
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = (e) => {
+    const { login, isLoading, error } = useAuthStore();
+
+    const handleLogin = async (e) => {
         e.preventDefault();
+        await login(email, password);
     };
 
     return (
@@ -58,7 +63,18 @@ function Login() {
                             <a href="/password-forgot">Forgot password?</a>
                         </div>
 
-                        <button type="submit" className="login-button">Sign In</button>
+                        {error && <p className="error-message">{error}</p>}
+
+                        <button type="submit" className="login-button">
+                            {isLoading ? (
+                                <FontAwesomeIcon
+                                    className="loading"
+                                    icon={faSpinner}
+                                />
+                            ) : (
+                                "Sign In"
+                            )}
+                        </button>
                     </form>
 
                     <p className="login-no-account">

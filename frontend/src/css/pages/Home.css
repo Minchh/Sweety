@@ -2,7 +2,7 @@
     margin-top: 11rem;
     margin-left: 5rem;
     font-family: "Playfair Display", serif;
-    padding-bottom: 600px;
+    padding-bottom: min(600px, 100vh);
 }
 
 .hero-title {

@@ -1,10 +1,15 @@
 import "../css/components/NavBar.css";
 
 import sweetyLogo from "../assets/sweety-logo.svg";
+
 import Links from "./Links.jsx";
+import LoginActions from "./LoginActions.jsx";
 import DefaultActions from "./DefaultActions.jsx";
+import { useAuthStore } from "../store/authStore.js";
 
 function NavBar() {
+    const { isAuthenticated, isCheckingAuth } = useAuthStore();
+    console.log(isAuthenticated);
     return (
         <nav className="navbar">
             <div className="navbar-brand">
@@ -15,8 +20,15 @@ function NavBar() {
 
             <Links />
 
-            {/* TODO: Render based on the user is authenticated or not? */}
-            <DefaultActions />
+            {isCheckingAuth ? (
+                <div className="navbar-loading">
+                    <div className="loading-placeholder"></div>
+                </div>
+            ) : isAuthenticated ? (
+                <LoginActions />
+            ) : (
+                <DefaultActions />
+            )}
         </nav>
     );
 }

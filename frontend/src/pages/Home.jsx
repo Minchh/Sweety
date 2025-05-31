@@ -8,7 +8,7 @@ function Home() {
         <>
             <title>Home | Sweety </title>
 
-            <div className="page-container">
+            <div className="page-container home-container">
                 <NavBar />
                 <section className="hero">
                     <h1 className="hero-title">Basic. Elegant. Delicious</h1>
