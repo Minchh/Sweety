@@ -10,6 +10,7 @@ import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import { useProductsStore } from "../store/productsStore.js";
+import { useCartStore } from "../store/cartStore.js";
 
 function Products() {
     const navigate = useNavigate();
@@ -150,10 +151,18 @@ function Products() {
         // Scroll to top when page changes
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
+    
+    // Cart Store
+    const { addProductToCart } = useCartStore();
 
-    const handleAddToCart = (product) => {
-        console.log("Added to cart:", product);
-        // TODO: Implement your cart logic here
+    const handleAddToCart = async (product) => {
+        const result = await addProductToCart(product._id);
+
+        if (result.status === "success") {
+            alert(`${product.name} added to cart`);
+        } else {
+            alert("Failed to add product:", result.message);
+        }
     };
 
     // Calculate display info
