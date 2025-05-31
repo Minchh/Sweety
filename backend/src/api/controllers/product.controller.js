@@ -4,52 +4,86 @@ import { Product } from "../models/index.js";
 
 /* CRUD - Product API */
 
-function getFilteredQuery(query) {
-    const schemaPath = Object.keys(Product.schema.paths);
-    let filteredQuery = {};
-
-    for (let key in query) {
-        if (schemaPath.includes(key)) {
-            filteredQuery[key] = query[key];
-        }
-    }
-    filteredQuery = JSON.stringify(filteredQuery);
-    filteredQuery = filteredQuery.replace(
-        /\bgte|gt|lte|le\b/g,
-        (match) => `$${match}`
-    );
-    filteredQuery = JSON.parse(filteredQuery);
-    return filteredQuery;
-}
-
 // Get many products
+/*
+    GET /products?sort[price]=1&sort[createdAt]=-1    // price ascending, createdAt descending
+    GET /products?sort[name]=1                        // name ascending  
+    GET /products?sort[price]=-1                      // price descending
+    GET /products?price[gte]=50&sort[price]=1         // filter + sort by price ascending
+*/
 export async function getProducts(req, res) {
     try {
-        const query = qs.parse(req.query);
+        console.log(qs.parse(req.query));
 
-        // Filter
-        const filteredQuery = getFilteredQuery(query);
-        let mongoQuery = Product.find(filteredQuery);
+        const { search, sort, page = 1, limit = 12, category, price, ...filters } = qs.parse(req.query);
 
-        // Sort
-        if (query.sort) {
-            mongoQuery = mongoQuery.sort({ ...query.sort, _id: "asc" });
-        } else {
-            mongoQuery = mongoQuery.sort({ name: "asc", _id: "asc" });
+        // Query Conditions
+        const queryConditions = {
+            ...filters,
+            ...(search && { name: new RegExp(`^${search}`, "i") }),
+            ...(category &&
+                category !== "All" && {
+                    category: Array.isArray(category) ? { $in: category } : category,
+                }),
+        };
+
+        // Add price range filtering
+        if (price && typeof price === "object") {
+            queryConditions.price = {};
+
+            if (price.gte !== undefined && price.gte !== "") {
+                queryConditions.price.$gte = parseFloat(price.gte);
+            }
+
+            if (price.lte !== undefined && price.lte !== "") {
+                queryConditions.price.$lte = parseFloat(price.lte);
+            }
+
+            if (price.gt !== undefined && price.gt !== "") {
+                queryConditions.price.$gt = parseFloat(price.gt);
+            }
+
+            if (price.lt !== undefined && price.lt !== "") {
+                queryConditions.price.$lt = parseFloat(price.lt);
+            }
         }
 
-        // Paginate
-        const page = +query.page || 1;
-        const limit = +query.limit || 10;
-        const skip = (page - 1) * limit;
-        mongoQuery = mongoQuery.skip(skip).limit(limit);
+        // Parse pagination
+        const pageNum = Math.max(1, parseInt(page));
+        const limitNum = Math.min(20, Math.max(1, parseInt(limit)));
+        const skip = (pageNum - 1) * limitNum;
 
-        const products = await mongoQuery;
+        // Parse sort - only accepts 1 and -1 format
+        let sortObj = { name: 1, _id: 1 };
+        if (sort && typeof sort === "object") {
+            sortObj = {};
+            Object.keys(sort).forEach((field) => {
+                const value = parseInt(sort[field]);
+                if (value === 1 || value === -1) {
+                    sortObj[field] = value;
+                }
+            });
+            // Fallback to default if no valid sort fields
+            if (Object.keys(sortObj).length === 0) {
+                sortObj = { name: 1, _id: 1 };
+            }
+        }
+
+        const [products, totalCount] = await Promise.all([
+            Product.find(queryConditions).select("-__v").sort(sortObj).skip(skip).limit(limitNum).lean(),
+
+            Product.countDocuments(queryConditions),
+        ]);
+
+        const totalPages = Math.ceil(totalCount / limitNum);
 
         res.status(200).json({
             code: 200,
             status: "success",
             length: products.length,
+            totalCount,
+            currentPage: +page,
+            totalPages: Math.ceil(totalCount / +limit),
             data: {
                 products,
             },
@@ -151,11 +185,7 @@ export async function updateProduct(req, res) {
 
         const body = { ...req.body };
 
-        const updatedProduct = await Product.findByIdAndUpdate(
-            productId,
-            body,
-            { new: true }
-        );
+        const updatedProduct = await Product.findByIdAndUpdate(productId, body, { new: true });
         if (!updatedProduct) {
             res.status(404).json({
                 code: 404,

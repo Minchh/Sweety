@@ -52,6 +52,16 @@ const userSchema = new mongoose.Schema(
                     "Password must contain uppercase, lowercase, number, and special character",
             },
         },
+        role: {
+            type: String,
+            enum: ["customer", "admin"],
+            default: "customer",
+            required: [true, "User needs a role"],
+        },
+        address: {
+            type: String,
+            default: "",
+        },
         lastLogin: {
             type: Date,
             default: Date.now,

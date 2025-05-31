@@ -2,7 +2,7 @@ import brcypt from "bcrypt";
 import crypto from "crypto";
 
 import { appConfig } from "../../config/index.js";
-import { User } from "../models/index.js";
+import { User, Order } from "../models/index.js";
 import {
     generateTokenAndSetCookie,
     generateVerificationToken,
@@ -52,7 +52,7 @@ export async function signup(req, res) {
         const hashedPassword = await brcypt.hash(password, 12);
         const verificationToken = generateVerificationToken();
 
-        const user = await User.create({
+        const newUser = await User.create({
             fullName: fullName,
             phoneNumber: phoneNumber,
             email: email,
@@ -61,18 +61,27 @@ export async function signup(req, res) {
             verificationTokenExpiresAt: Date.now() + 15 * 60 * 1000, // 15 minutes
         });
 
+        await Order.create({
+            amount: 0,
+            totalAmount: 0,
+            discount: 0,
+            orderStatus: "pending",
+            address: "Ho Chi Minh City",
+            user: newUser,
+        });
+
         // JWT
-        generateTokenAndSetCookie(res, user._id);
+        generateTokenAndSetCookie(res, newUser._id);
 
         // Send verification email
-        await sendVerificationEmail(user.email, verificationToken);
+        await sendVerificationEmail(newUser.email, verificationToken);
 
         res.status(201).json({
             code: 201,
             status: "success",
             data: {
                 user: {
-                    ...user._doc,
+                    ...newUser._doc,
                     password: undefined,
                 },
             },
