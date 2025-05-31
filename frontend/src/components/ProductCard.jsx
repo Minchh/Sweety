@@ -13,7 +13,7 @@ function ProductCard({ product, onAddToCart }) {
         >
             <div className="product-image-container">
                 <img
-                    src={product.image}
+                    src={product.imageURL}
                     alt={product.name}
                     className="product-image"
                 />

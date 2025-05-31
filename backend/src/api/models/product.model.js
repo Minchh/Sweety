@@ -15,16 +15,13 @@ const productSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
+        imageURL: {
+            type: String,
+            trim: true,
+        },
         price: Number,
         available: Boolean,
         stock: Number,
-        size: [
-            {
-                weight: Number,
-                unit: String,
-            },
-        ],
-        tags: [String],
     },
     {
         timestamps: true,

@@ -292,13 +292,20 @@
 /* Products Grid */
 .products-grid {
     min-height: 900px;
-    /* display: grid;
-    grid-template-columns: repeat(auto-fill, 250px);
-    grid-template-rows: auto;
-    row-gap: 1rem;
-    column-gap: 2rem; */
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-content: flex-start;
+}
+
+.loading-spinner {
+    padding-left: 1rem;
+    font-size: 0.75rem;
+    color: #f0f0f0;
+}
+
+.no-products {
+    padding-left: 1rem;
+    font-size: 0.75rem;
+    color: #f0f0f0;
 }

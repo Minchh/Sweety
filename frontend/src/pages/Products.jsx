@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -8,179 +8,145 @@ import "../css/pages/Products.css";
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
 import ProductCard from "../components/ProductCard.jsx";
-
-// Sample product data
-const productsData = [
-    {
-        id: 1,
-        name: "Tiramisu",
-        price: 7.7,
-        image: "/products/product-tiramisu.png",
-        category: "cakes",
-    },
-    {
-        id: 2,
-        name: "Black Forest",
-        price: 11.54,
-        image: "/products/product-blackforest.png",
-        category: "cakes",
-    },
-    {
-        id: 3,
-        name: "Cheesecake",
-        price: 9.62,
-        image: "/products/product-cheesecake.png",
-        category: "cakes",
-    },
-    {
-        id: 4,
-        name: "Croissant",
-        price: 2.21,
-        image: "/products/product-croissant.png",
-        category: "breads",
-    },
-    {
-        id: 5,
-        name: "Tiramisu",
-        price: 7.7,
-        image: "/products/product-tiramisu.png",
-        category: "cakes",
-    },
-    {
-        id: 6,
-        name: "Black Forest",
-        price: 11.54,
-        image: "/products/product-blackforest.png",
-        category: "cakes",
-    },
-    {
-        id: 7,
-        name: "Cheesecake",
-        price: 9.62,
-        image: "/products/product-cheesecake.png",
-        category: "cakes",
-    },
-    {
-        id: 8,
-        name: "Croissant",
-        price: 2.21,
-        image: "/products/product-croissant.png",
-        category: "breads",
-    },
-    {
-        id: 9,
-        name: "Tiramisu",
-        price: 7.7,
-        image: "/products/product-tiramisu.png",
-        category: "cakes",
-    },
-    {
-        id: 10,
-        name: "Black Forest",
-        price: 11.54,
-        image: "/products/product-blackforest.png",
-        category: "cakes",
-    },
-    {
-        id: 11,
-        name: "Cheesecake",
-        price: 9.62,
-        image: "/products/product-cheesecake.png",
-        category: "cakes",
-    },
-    {
-        id: 12,
-        name: "Croissant",
-        price: 2.21,
-        image: "/products/product-croissant.png",
-        category: "breads",
-    },
-    {
-        id: 13,
-        name: "Tiramisu",
-        price: 7.7,
-        image: "/products/product-tiramisu.png",
-        category: "cakes",
-    },
-    {
-        id: 14,
-        name: "Black Forest",
-        price: 11.54,
-        image: "/products/product-blackforest.png",
-        category: "cakes",
-    },
-    {
-        id: 15,
-        name: "Cheesecake",
-        price: 9.62,
-        image: "/products/product-cheesecake.png",
-        category: "cakes",
-    },
-    {
-        id: 16,
-        name: "Croissant",
-        price: 2.21,
-        image: "/products/product-croissant.png",
-        category: "breads",
-    },
-];
+import { useProductsStore } from "../store/productsStore.js";
 
 function Products() {
-    const sortByOptions = ["Sort by Name", "Sort by Price"];
+    const {
+        products,
+        isLoading,
+        error,
+        totalCount,
+        totalPages,
+        currentPage,
+        searchTerm,
+        selectedCategories,
+        sortBy,
+        sortOrder,
+        minPrice,
+        maxPrice,
+        setSearchTerm,
+        setSelectedCategories,
+        setSortBy,
+        setPriceRange,
+        setCurrentPage,
+        getProducts,
+        resetFilters,
+        clearError,
+    } = useProductsStore();
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [localSearchTerm, setLocalSearchTerm] = useState("");
+    const [localMinPrice, setLocalMinPrice] = useState(0);
+    const [localMaxPrice, setLocalMaxPrice] = useState(12.0);
+
+    const sortByOptions = [
+        { label: "Sort by Name (A-Z)", field: "name", order: "asc" },
+        { label: "Sort by Name (Z-A)", field: "name", order: "desc" },
+        { label: "Sort by Price (Low-High)", field: "price", order: "asc" },
+        { label: "Sort by Price (High-Low)", field: "price", order: "desc" },
+    ];
+
     const filters = [
-        { id: "all", label: "All" },
+        { id: "All", label: "All" },
         { id: "breads", label: "Breads" },
         { id: "cakes", label: "Cakes" },
         { id: "candies", label: "Candies" },
         { id: "pastries", label: "Pastries" },
     ];
 
-    // Filter states
-    const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(12.0);
-    const [selectedCategories, setSelectedCategories] = useState(["all"]);
-    const [searchTerm, setSearchTerm] = useState("");
+    // Get current sort option for display
+    const getCurrentSortOption = () => {
+        const option = sortByOptions.find((opt) => opt.field === sortBy && opt.order === sortOrder);
+        return option ? option.label : "Sort by Name (A-Z)";
+    };
 
-    // Sort states
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [sortOption, setSortOption] = useState("Sort by Name");
+    // Load products on component mount
+    useEffect(() => {
+        getProducts();
+    }, []);
 
-    // Pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 12;
+    // Sync local states with store
+    useEffect(() => {
+        setLocalSearchTerm(searchTerm);
+    }, [searchTerm]);
+
+    useEffect(() => {
+        setLocalMinPrice(minPrice || 0);
+        setLocalMaxPrice(maxPrice || 12.0);
+    }, [minPrice, maxPrice]);
+
+    // Debounced search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (localSearchTerm !== searchTerm) {
+                setSearchTerm(localSearchTerm);
+                getProducts();
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [localSearchTerm]);
 
     const handleSliderChange = (value, isMin) => {
         if (isMin) {
-            if (value > maxPrice) {
-                setMinPrice(maxPrice);
-                setMaxPrice(value);
+            if (value > localMaxPrice) {
+                setLocalMinPrice(localMaxPrice);
+                setLocalMaxPrice(value);
             } else {
-                setMinPrice(value);
+                setLocalMinPrice(value);
             }
         } else {
-            if (value < minPrice) {
-                setMaxPrice(minPrice);
-                setMinPrice(value);
+            if (value < localMinPrice) {
+                setLocalMaxPrice(localMinPrice);
+                setLocalMinPrice(value);
             } else {
-                setMaxPrice(value);
+                setLocalMaxPrice(value);
             }
         }
     };
 
-    const handleCategoryChange = (category) => {
-        if (category === "all") {
-            setSelectedCategories(["all"]);
-        } else {
-            const newCategories = selectedCategories.includes("all")
-                ? [category]
-                : selectedCategories.includes(category)
-                ? selectedCategories.filter((c) => c !== category)
-                : [...selectedCategories.filter((c) => c !== "all"), category];
+    // Apply price filter when sliders stop moving
+    const handlePriceFilterApply = () => {
+        setPriceRange(localMinPrice === 0 ? "" : localMinPrice, localMaxPrice === 12.0 ? "" : localMaxPrice);
+        getProducts();
+    };
 
-            setSelectedCategories(
-                newCategories.length === 0 ? ["all"] : newCategories
-            );
+    const handleCategoryChange = (category) => {
+        let newCategories;
+
+        if (category === "All") {
+            newCategories = ["All"];
+        } else {
+            const isAllSelected = selectedCategories.includes("All");
+            const isCategorySelected = selectedCategories.includes(category);
+
+            if (isAllSelected) {
+                newCategories = [category];
+            } else if (isCategorySelected) {
+                newCategories = selectedCategories.filter((c) => c !== category);
+                if (newCategories.length === 0) {
+                    newCategories = ["All"];
+                }
+            } else {
+                newCategories = [...selectedCategories, category];
+            }
         }
+
+        setSelectedCategories(newCategories);
+        getProducts();
+    };
+
+    const handleSortChange = (option) => {
+        setSortBy(option.field, option.order);
+        setIsDropdownOpen(false);
+        getProducts();
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        getProducts();
+        // Scroll to top when page changes
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handleAddToCart = (product) => {
@@ -188,36 +154,43 @@ function Products() {
         // TODO: Implement your cart logic here
     };
 
-    // Filter and sort products
-    const filteredProducts = productsData.filter((product) => {
-        const matchesPrice =
-            product.price >= minPrice && product.price <= maxPrice;
-        const matchesCategory =
-            selectedCategories.includes("all") ||
-            selectedCategories.includes(product.category);
-        const matchesSearch = product.name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
-        return matchesPrice && matchesCategory && matchesSearch;
-    });
+    const handleResetFilters = () => {
+        resetFilters();
+        setLocalSearchTerm("");
+        setLocalMinPrice(0);
+        setLocalMaxPrice(12.0);
+        getProducts();
+    };
 
-    const sortedProducts = [...filteredProducts].sort((a, b) => {
-        if (sortOption === "Sort by Price") {
-            return a.price - b.price;
-        }
-        return a.name.localeCompare(b.name);
-    });
-
-    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+    // Calculate display info
+    const itemsPerPage = 12;
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const displayedProducts = sortedProducts.slice(
-        startIndex,
-        startIndex + itemsPerPage
-    );
+    const endIndex = Math.min(startIndex + itemsPerPage, totalCount);
+
+    if (error) {
+        return (
+            <div className="page-container">
+                <NavBar />
+                <div className="error-container">
+                    <h2>Error loading products</h2>
+                    <p>{error}</p>
+                    <button
+                        onClick={() => {
+                            clearError();
+                            getProducts();
+                        }}
+                    >
+                        Try Again
+                    </button>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <>
-            <title>Products | Sweety </title>
+            <title>Products | Sweety</title>
 
             <div className="page-container">
                 <NavBar />
@@ -228,51 +201,31 @@ function Products() {
                         {/* Search */}
                         <div className="sidebar-section">
                             <div className="search-container">
-                                <FontAwesomeIcon
-                                    className="search-icon"
-                                    size={16}
-                                    icon={faSearch}
-                                />
+                                <FontAwesomeIcon className="search-icon" size={16} icon={faSearch} />
                                 <input
                                     type="text"
-                                    placeholder="Search"
-                                    value={searchTerm}
-                                    onChange={(e) =>
-                                        setSearchTerm(e.target.value)
-                                    }
+                                    placeholder="Search products..."
+                                    value={localSearchTerm}
+                                    onChange={(e) => setLocalSearchTerm(e.target.value)}
                                 />
                             </div>
                             <div className="dropdown-container">
-                                <button
-                                    className="dropdown-button"
-                                    onClick={() =>
-                                        setIsDropdownOpen(!isDropdownOpen)
-                                    }
-                                >
-                                    {sortOption}
-                                    <FontAwesomeIcon
-                                        className="dropdown-icon"
-                                        size={16}
-                                        icon={faCaretDown}
-                                    />
+                                <button className="dropdown-button" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                                    {getCurrentSortOption()}
+                                    <FontAwesomeIcon className="dropdown-icon" size={16} icon={faCaretDown} />
                                 </button>
 
                                 {isDropdownOpen && (
                                     <div className="dropdown-menu">
                                         {sortByOptions.map((option) => (
                                             <button
-                                                key={option}
+                                                key={option.label}
                                                 className={`dropdown-option ${
-                                                    sortOption === option
-                                                        ? "selected"
-                                                        : ""
+                                                    getCurrentSortOption() === option.label ? "selected" : ""
                                                 }`}
-                                                onClick={() => {
-                                                    setSortOption(option);
-                                                    setIsDropdownOpen(false);
-                                                }}
+                                                onClick={() => handleSortChange(option)}
                                             >
-                                                {option}
+                                                {option.label}
                                             </button>
                                         ))}
                                     </div>
@@ -285,27 +238,15 @@ function Products() {
                             <h4 className="section-title">CATEGORY</h4>
                             <div className="category-list">
                                 {filters.map((category) => (
-                                    <div
-                                        className="category-group"
-                                        key={category.id}
-                                    >
+                                    <div className="category-group" key={category.id}>
                                         <input
                                             className="category-input"
-                                            id={`${category.id}`}
+                                            id={category.id}
                                             type="checkbox"
-                                            checked={selectedCategories.includes(
-                                                category.id
-                                            )}
-                                            onChange={() =>
-                                                handleCategoryChange(
-                                                    category.id
-                                                )
-                                            }
+                                            checked={selectedCategories.includes(category.id)}
+                                            onChange={() => handleCategoryChange(category.id)}
                                         />
-                                        <label
-                                            htmlFor={`${category.id}`}
-                                            className="category-label"
-                                        >
+                                        <label htmlFor={category.id} className="category-label">
                                             {category.label}
                                         </label>
                                     </div>
@@ -321,44 +262,35 @@ function Products() {
                                 <div
                                     className="slider-range"
                                     style={{
-                                        left: `${(minPrice / 12.0) * 100}%`,
-                                        width: `${
-                                            ((maxPrice - minPrice) / 12.0) * 100
-                                        }%`,
+                                        left: `${(localMinPrice / 12.0) * 100}%`,
+                                        width: `${((localMaxPrice - localMinPrice) / 12.0) * 100}%`,
                                     }}
                                 ></div>
                                 <input
                                     type="range"
                                     min="0"
                                     max="11.99"
-                                    value={minPrice}
+                                    value={localMinPrice}
                                     step="0.01"
                                     className="price-slider"
-                                    onChange={(e) =>
-                                        handleSliderChange(
-                                            parseFloat(e.target.value),
-                                            true
-                                        )
-                                    }
+                                    onChange={(e) => handleSliderChange(parseFloat(e.target.value), true)}
+                                    onMouseUp={handlePriceFilterApply}
+                                    onTouchEnd={handlePriceFilterApply}
                                 />
                                 <input
                                     type="range"
                                     min="0.01"
                                     max="12.00"
-                                    value={maxPrice}
+                                    value={localMaxPrice}
                                     step="0.01"
                                     className="price-slider"
-                                    onChange={(e) =>
-                                        handleSliderChange(
-                                            parseFloat(e.target.value),
-                                            false
-                                        )
-                                    }
+                                    onChange={(e) => handleSliderChange(parseFloat(e.target.value), false)}
+                                    onMouseUp={handlePriceFilterApply}
+                                    onTouchEnd={handlePriceFilterApply}
                                 />
                             </div>
                             <div className="price-display">
-                                Price: ${minPrice.toFixed(2)} - $
-                                {maxPrice.toFixed(2)}
+                                Price: ${localMinPrice.toFixed(2)} - ${localMaxPrice.toFixed(2)}
                             </div>
                         </div>
                     </div>
@@ -368,39 +300,42 @@ function Products() {
                         {/* Header */}
                         <div className="products-header">
                             <div className="results-info">
-                                Showing {startIndex + 1} -{" "}
-                                {Math.min(
-                                    startIndex + itemsPerPage,
-                                    sortedProducts.length
-                                )}{" "}
-                                of {sortedProducts.length} results
+                                {isLoading
+                                    ? "Loading..."
+                                    : `Showing ${
+                                          totalCount > 0 ? startIndex + 1 : 0
+                                      } - ${endIndex} of ${totalCount} results`}
                             </div>
-                            <div className="pagination">
-                                {Array.from({ length: totalPages }, (_, i) => (
-                                    <button
-                                        key={i + 1}
-                                        className={`page-btn ${
-                                            currentPage === i + 1
-                                                ? "active"
-                                                : ""
-                                        }`}
-                                        onClick={() => setCurrentPage(i + 1)}
-                                    >
-                                        {i + 1}
-                                    </button>
-                                ))}
-                            </div>
+                            {totalPages > 1 && (
+                                <div className="pagination">
+                                    {Array.from({ length: totalPages }, (_, i) => (
+                                        <button
+                                            key={i + 1}
+                                            className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
+                                            onClick={() => handlePageChange(i + 1)}
+                                            disabled={isLoading}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* Products Grid */}
                         <div className="products-grid">
-                            {displayedProducts.map((product) => (
-                                <ProductCard
-                                    key={product.id}
-                                    product={product}
-                                    onAddToCart={handleAddToCart}
-                                />
-                            ))}
+                            {isLoading ? (
+                                <div className="loading-spinner">Loading products...</div>
+                            ) : products && products.length > 0 ? (
+                                products.map((product) => (
+                                    <ProductCard key={product._id} product={product} onAddToCart={handleAddToCart} />
+                                ))
+                            ) : (
+                                <div className="no-products">
+                                    <h3>No products found</h3>
+                                    <p>Try adjusting your filters or search terms.</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
