@@ -15,6 +15,7 @@ function ContactUs() {
                         justifyContent: "center",
                         alignContent: "center",
                         color: "#f0f0f0",
+                        fontFamily: "Poppins",
                     }}
                 >
                     We are working on...

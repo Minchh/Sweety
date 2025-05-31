@@ -13,8 +13,9 @@ function AboutUs() {
                         display: "flex",
                         marginTop: "5rem",
                         justifyContent: "center",
-                        alignContent: "center",
+                        alignContent: "cdenter",
                         color: "#f0f0f0",
+                        fontFamily: "Poppins",
                     }}
                 >
                     We are working on...

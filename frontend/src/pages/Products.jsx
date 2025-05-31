@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +12,8 @@ import ProductCard from "../components/ProductCard.jsx";
 import { useProductsStore } from "../store/productsStore.js";
 
 function Products() {
+    const navigate = useNavigate();
+
     const {
         products,
         isLoading,

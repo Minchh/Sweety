@@ -9,7 +9,7 @@ import { useAuthStore } from "../store/authStore.js";
 
 function NavBar() {
     const { isAuthenticated, isCheckingAuth } = useAuthStore();
-    console.log(isAuthenticated);
+
     return (
         <nav className="navbar">
             <div className="navbar-brand">
