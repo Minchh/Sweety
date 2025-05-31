@@ -11,6 +11,7 @@ import Footer from "../components/Footer.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import { useProductsStore } from "../store/productsStore.js";
 import { useCartStore } from "../store/cartStore.js";
+import { useAuthStore } from "../store/authStore.js";
 
 function Products() {
     const navigate = useNavigate();
@@ -37,6 +38,10 @@ function Products() {
         clearError,
     } = useProductsStore();
 
+    const { addProductToCart } = useCartStore();
+
+    const { isAuthenticated } = useAuthStore();
+
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [localSearchTerm, setLocalSearchTerm] = useState("");
     const [localMinPrice, setLocalMinPrice] = useState(0);
@@ -51,10 +56,10 @@ function Products() {
 
     const filters = [
         { id: "All", label: "All" },
-        { id: "breads", label: "Breads" },
-        { id: "cakes", label: "Cakes" },
-        { id: "candies", label: "Candies" },
-        { id: "pastries", label: "Pastries" },
+        { id: "Breads", label: "Breads" },
+        { id: "Cakes", label: "Cakes" },
+        { id: "Candies", label: "Candies" },
+        { id: "Pastries", label: "Pastries" },
     ];
 
     // Get current sort option for display
@@ -110,7 +115,7 @@ function Products() {
 
     // Apply price filter when sliders stop moving
     const handlePriceFilterApply = () => {
-        setPriceRange(localMinPrice === 0 ? "" : localMinPrice, localMaxPrice === 12.0 ? "" : localMaxPrice);
+        setPriceRange(localMinPrice === 0 ? "" : localMinPrice, localMaxPrice === 20.0 ? "" : localMaxPrice);
         getProducts();
     };
 
@@ -151,11 +156,12 @@ function Products() {
         // Scroll to top when page changes
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
-    
-    // Cart Store
-    const { addProductToCart } = useCartStore();
 
     const handleAddToCart = async (product) => {
+        if (!isAuthenticated) {
+            navigate("/login");
+        }
+
         const result = await addProductToCart(product._id);
 
         if (result.status === "success") {
@@ -243,6 +249,7 @@ function Products() {
                                 {filters.map((category) => (
                                     <div className="category-group" key={category.id}>
                                         <input
+                                            defaultChecked={true}
                                             className="category-input"
                                             id={category.id}
                                             type="checkbox"
@@ -272,7 +279,7 @@ function Products() {
                                 <input
                                     type="range"
                                     min="0"
-                                    max="11.99"
+                                    max="19.99"
                                     value={localMinPrice}
                                     step="0.01"
                                     className="price-slider"
@@ -283,7 +290,7 @@ function Products() {
                                 <input
                                     type="range"
                                     min="0.01"
-                                    max="12.00"
+                                    max="20.00"
                                     value={localMaxPrice}
                                     step="0.01"
                                     className="price-slider"

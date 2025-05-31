@@ -12,7 +12,7 @@ export const useProductsStore = create((set, get) => ({
     message: null,
 
     searchTerm: "",
-    selectedCategories: [],
+    selectedCategories: ["All"],
     sortBy: "name",
     sortOrder: "asc", // "asc", "desc"
     minPrice: "",
