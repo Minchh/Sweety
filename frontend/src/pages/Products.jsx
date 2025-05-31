@@ -30,14 +30,13 @@ function Products() {
         setPriceRange,
         setCurrentPage,
         getProducts,
-        resetFilters,
         clearError,
     } = useProductsStore();
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [localSearchTerm, setLocalSearchTerm] = useState("");
     const [localMinPrice, setLocalMinPrice] = useState(0);
-    const [localMaxPrice, setLocalMaxPrice] = useState(12.0);
+    const [localMaxPrice, setLocalMaxPrice] = useState(20.0);
 
     const sortByOptions = [
         { label: "Sort by Name (A-Z)", field: "name", order: "asc" },
@@ -72,7 +71,7 @@ function Products() {
 
     useEffect(() => {
         setLocalMinPrice(minPrice || 0);
-        setLocalMaxPrice(maxPrice || 12.0);
+        setLocalMaxPrice(maxPrice || 20.0);
     }, [minPrice, maxPrice]);
 
     // Debounced search
@@ -152,14 +151,6 @@ function Products() {
     const handleAddToCart = (product) => {
         console.log("Added to cart:", product);
         // TODO: Implement your cart logic here
-    };
-
-    const handleResetFilters = () => {
-        resetFilters();
-        setLocalSearchTerm("");
-        setLocalMinPrice(0);
-        setLocalMaxPrice(12.0);
-        getProducts();
     };
 
     // Calculate display info
@@ -262,8 +253,8 @@ function Products() {
                                 <div
                                     className="slider-range"
                                     style={{
-                                        left: `${(localMinPrice / 12.0) * 100}%`,
-                                        width: `${((localMaxPrice - localMinPrice) / 12.0) * 100}%`,
+                                        left: `${(localMinPrice / 20.0) * 100}%`,
+                                        width: `${((localMaxPrice - localMinPrice) / 20.0) * 100}%`,
                                     }}
                                 ></div>
                                 <input
