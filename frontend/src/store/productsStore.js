@@ -49,17 +49,6 @@ export const useProductsStore = create((set, get) => ({
 
     setCurrentPage: (page) => set({ currentPage: page }),
 
-    resetFilters: () =>
-        set({
-            searchTerm: "",
-            selectedCategories: [],
-            sortBy: "name",
-            sortOrder: "asc",
-            minPrice: "",
-            maxPrice: "",
-            currentPage: 1,
-        }),
-
     buildQueryParams: () => {
         const state = get();
         const params = new URLSearchParams();
