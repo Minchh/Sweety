@@ -1,7 +1,8 @@
 import { CartItem, Product, User, Order } from "../models/index.js";
 
 export const addProductToCart = async (req, res) => {
-    const { userId, productId } = req.body;
+    const userId = req.userId;
+    const { productId } = req.params;
 
     try {
         const activeOrder = await Order.findOne({
@@ -57,7 +58,7 @@ export const addProductToCart = async (req, res) => {
             code: 201,
             status: "success",
             data: {
-                product: savedCartItem,
+                cartItem: savedCartItem,
             },
         });
     } catch (err) {

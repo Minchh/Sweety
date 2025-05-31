@@ -13,8 +13,6 @@ import { Product } from "../models/index.js";
 */
 export async function getProducts(req, res) {
     try {
-        console.log(qs.parse(req.query));
-
         const { search, sort, page = 1, limit = 12, category, price, ...filters } = qs.parse(req.query);
 
         // Query Conditions
