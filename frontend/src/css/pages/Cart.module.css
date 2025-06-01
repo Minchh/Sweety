@@ -32,8 +32,8 @@
     grid-template-columns: 2fr 1fr 1fr 1fr;
 }
 
-.cart_update_button {
-    width: 200px;
+.cart_shopping_button {
+    width: max-content;
     padding: 1.5rem 2rem;
     background-color: transparent;
     border: 1px solid #ebc6a8;
@@ -44,7 +44,7 @@
     transition: background-color 0.2s, color 0.2s;
 }
 
-.cart_update_button:hover {
+.cart_shopping_button:hover {
     border-color: #f0f0f0;
     color: #f0f0f0;
 }

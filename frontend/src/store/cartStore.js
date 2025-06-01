@@ -84,4 +84,59 @@ export const useCartStore = create((set, get) => ({
             }
         }
     },
+
+    increaseProductQuantity: async (productId) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axios.post(`${API_URL}/increase/${productId}`);
+
+            set((state) => ({
+                cartItems: state.cartItems.map((item) =>
+                    item.product._id === productId ? { ...item, quantity: item.quantity + 1 } : item
+                ),
+                isLoading: false,
+            }));
+
+            return response.data;
+        } catch (err) {
+            set({ error: err.response?.data?.message || "Error increasing product quantity", isLoading: false });
+            throw err;
+        }
+    },
+
+    decreaseProductQuantity: async (productId) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axios.post(`${API_URL}/decrease/${productId}`);
+
+            set((state) => ({
+                cartItems: state.cartItems.map((item) =>
+                    item.product._id === productId ? { ...item, quantity: item.quantity - 1 } : item
+                ),
+                isLoading: false,
+            }));
+
+            return response.data;
+        } catch (err) {
+            set({ error: err.response?.data?.message || "Error increasing product quantity", isLoading: false });
+            throw err;
+        }
+    },
+
+    deleteProductFromCart: async (cartItemId) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axios.delete(`${API_URL}/${cartItemId}`);
+
+            set((state) => ({
+                cartItems: state.cartItems.filter((item) => item.id !== cartItemId),
+                isLoading: false,
+            }));
+
+            return response.data;
+        } catch (err) {
+            set({ error: err.response?.data?.message || "Error deleting product from cart", isLoading: false });
+            throw err;
+        }
+    },
 }));

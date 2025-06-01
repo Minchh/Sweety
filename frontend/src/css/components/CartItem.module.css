@@ -74,4 +74,28 @@
     font-weight: 300;
     text-align: center;
     color: #f0f0f0;
+    position: relative;
+}
+
+.product_delete {
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    background: transparent;
+}
+
+.product_delete_button {
+    background: transparent;
+    cursor: pointer;
+}
+
+.delete_icon {
+    color: #f0f0f0;
+    width: 18px;
+    height: 18px;
+    transition: color 0.2s;
+}
+
+.delete_icon:hover {
+    color: #dc3545;
 }

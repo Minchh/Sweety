@@ -65,9 +65,6 @@ function App() {
         checkAuth();
     }, [checkAuth]);
 
-    console.log("Is Authenticated: ", isAuthenticated);
-    console.log("User: ", user);
-
     return (
         <>
             <Routes>

@@ -93,12 +93,191 @@ export const getCartItems = async (req, res) => {
             return;
         }
 
+        const cartItems = activeOrder.cartItems.map((item) => {
+            return {
+                id: item._id,
+                product: {
+                    ...item.product._doc,
+                },
+                price: item.price,
+                quantity: item.quantity,
+            };
+        });
+
         res.status(200).json({
             code: 200,
             status: "success",
             data: {
-                cartItems: activeOrder.cartItems,
+                ...activeOrder._doc,
+                cartItems,
             },
+        });
+    } catch (err) {
+        res.status(500).json({
+            code: 500,
+            status: "error",
+            message: err.message,
+        });
+    }
+};
+
+export const increaseProductQuantity = async (req, res) => {
+    const userId = req.userId;
+    const { productId } = req.params;
+
+    try {
+        const activeOrder = await Order.findOne({ user: userId, orderStatus: "pending" });
+        const product = await Product.findById(productId);
+
+        if (!activeOrder || !product) {
+            res.status(404).json({
+                code: 404,
+                status: "fail",
+                message: "Active order or product not found",
+            });
+            return;
+        }
+
+        const cartItem = await CartItem.findOne({
+            product: productId,
+            order: activeOrder._id,
+            user: userId,
+        });
+
+        if (!cartItem) {
+            res.status(404).json({
+                code: 404,
+                status: "fail",
+                message: "Cart item not found",
+            });
+            return;
+        }
+
+        activeOrder.amount += product.price;
+        activeOrder.totalAmount += product.price;
+
+        cartItem.quantity += 1;
+
+        await activeOrder.save();
+        await cartItem.save();
+
+        res.status(200).json({
+            code: 200,
+            status: "success",
+            data: {
+                order: activeOrder,
+            },
+        });
+    } catch (err) {
+        res.status(500).json({
+            code: 500,
+            status: "error",
+            message: err.message,
+        });
+    }
+};
+
+export const decreaseProductQuantity = async (req, res) => {
+    const userId = req.userId;
+    const { productId } = req.params;
+
+    try {
+        const activeOrder = await Order.findOne({ user: userId, orderStatus: "pending" });
+        const product = await Product.findById(productId);
+
+        if (!activeOrder || !product) {
+            res.status(404).json({
+                code: 404,
+                status: "fail",
+                message: "Active order or product not found",
+            });
+            return;
+        }
+
+        const cartItem = await CartItem.findOne({
+            product: productId,
+            order: activeOrder._id,
+            user: userId,
+        });
+
+        if (!cartItem) {
+            res.status(404).json({
+                code: 404,
+                status: "fail",
+                message: "Cart item not found",
+            });
+            return;
+        }
+
+        if (cartItem.quantity === 1) {
+            res.status(400).json({
+                code: 400,
+                status: "fail",
+                message: "Cart item quantity cannot be decreased",
+            });
+            return;
+        }
+
+        activeOrder.amount -= product.price;
+        activeOrder.totalAmount -= product.price;
+
+        cartItem.quantity -= 1;
+
+        await activeOrder.save();
+        await cartItem.save();
+
+        res.status(200).json({
+            code: 200,
+            status: "success",
+            data: {
+                order: activeOrder,
+            },
+        });
+    } catch (err) {
+        res.status(500).json({
+            code: 500,
+            status: "error",
+            message: err.message,
+        });
+    }
+};
+
+export const deleteProductFromCart = async (req, res) => {
+    const userId = req.userId;
+    const { cartItemId } = req.params;
+
+    try {
+        const activeOrder = await Order.findOne({ user: userId, orderStatus: "pending" });
+        const cartItem = await CartItem.findById(cartItemId);
+
+        if (!activeOrder || !cartItem) {
+            res.status(404).json({
+                code: 404,
+                status: "fail",
+                message: "Order or Cart Item not found",
+            });
+            return;
+        }
+
+        const index = activeOrder.cartItems.indexOf(cartItemId);
+        if (index > -1) {
+            activeOrder.cartItems.splice(index, 1);
+            await CartItem.findByIdAndDelete(cartItemId);
+        } else {
+            res.status(404).json({
+                code: 404,
+                status: "fail",
+                message: "Cart Item not found in Active Order",
+            });
+            return;
+        }
+
+        await activeOrder.save();
+
+        res.status(200).json({
+            code: 200,
+            status: "success",
+            data: null,
         });
     } catch (err) {
         res.status(500).json({
