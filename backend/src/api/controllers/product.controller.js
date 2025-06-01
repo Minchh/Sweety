@@ -81,7 +81,7 @@ export async function getProducts(req, res) {
             length: products.length,
             totalCount,
             currentPage: +page,
-            totalPages: Math.ceil(totalCount / +limit),
+            totalPages,
             data: {
                 products,
             },

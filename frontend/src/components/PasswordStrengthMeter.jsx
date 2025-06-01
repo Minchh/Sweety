@@ -35,7 +35,7 @@ function PasswordStrengthMeter({ password }) {
 
     return (
         <div className="criteria-container">
-            <h3 className="criteria-title">Password Requirements</h3>
+            <h3 className="criteria-title">Password Suggestions</h3>
             <ul className="criteria-list">
                 {criteria.map((criterion, index) => (
                     <li key={index} className="criteria-item">

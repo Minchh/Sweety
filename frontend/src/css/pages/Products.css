@@ -296,8 +296,7 @@
     min-height: 900px;
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-between;
-    align-content: flex-start;
+    justify-content: flex-start;
 }
 
 .loading-spinner {
