@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import { appConfig, connectDB } from "./config/index.js"
-import { authRouter, productRouter, cartRouter } from "./api/routes/index.js";
+import { authRouter, productRouter, cartRouter, profileRouter } from "./api/routes/index.js";
 
 const app = express();
 
@@ -17,6 +17,7 @@ app.use(cookieParser());
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/cart", cartRouter)
+app.use("/api/v1/profile", profileRouter);
 
 // MongoDB connection
 await connectDB();

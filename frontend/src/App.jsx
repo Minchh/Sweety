@@ -16,6 +16,7 @@ import PasswordForgot from "./pages/PasswordForgot.jsx";
 import EmailVerification from "./pages/EmailVerification";
 import PasswordReset from "./pages/PasswordReset.jsx";
 import Cart from "./pages/Cart.jsx";
+import Profile from "./pages/Profile.jsx";
 import { useAuthStore } from "./store/authStore.js";
 
 const ProtectedRoute = ({ children }) => {
@@ -78,6 +79,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Cart />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <Profile />
                         </ProtectedRoute>
                     }
                 />

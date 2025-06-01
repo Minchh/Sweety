@@ -3,16 +3,12 @@ import { v4 as uuidv4 } from "uuid";
 
 const orderSchema = new mongoose.Schema(
     {
-        orderNote: {
+        orderDescription: {
             type: String,
             required: false,
         },
         amount: {
             type: Number,
-            required: true,
-        },
-        address: {
-            type: String,
             required: true,
         },
         orderStatus: {
@@ -31,11 +27,13 @@ const orderSchema = new mongoose.Schema(
         trackingId: {
             type: String,
             default: () => uuidv4(),
+            immutable: true,
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true,
+            immutable: true,
         },
         cartItems: [
             {

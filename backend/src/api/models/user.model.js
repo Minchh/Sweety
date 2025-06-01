@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
                 message: (props) => `${props.value} is not a valid email!`,
             },
             required: [true, "User email required"],
+            immutable: true,
             index: true,
         },
         phoneNumber: {
@@ -26,6 +27,7 @@ const userSchema = new mongoose.Schema(
                 message: (props) =>
                     `${props.value} is not a valid phone number!`,
             },
+            unique: true,
             required: [true, "User phone number required"],
         },
         fullName: {

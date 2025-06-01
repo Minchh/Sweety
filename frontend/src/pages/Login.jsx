@@ -35,7 +35,6 @@ function Login() {
 
                     <form
                         className="login-form"
-                        action="POST"
                         onSubmit={handleLogin}
                     >
                         <label htmlFor="">Email</label>

@@ -79,7 +79,7 @@ function Signup() {
                         <label htmlFor="">Phone Number</label>
                         <Input
                             icon={faPhone}
-                            type="phone"
+                            type="tel"
                             value={phoneNumber}
                             onChange={handleInputChange(setPhoneNumber)}
                         />
