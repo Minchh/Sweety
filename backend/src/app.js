@@ -3,8 +3,8 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-import { appConfig, connectDB } from "./config/index.js"
-import { authRouter, productRouter, cartRouter, profileRouter } from "./api/routes/index.js";
+import { appConfig, connectDB } from "./config/index.js";
+import { authRouter, productRouter, cartRouter, profileRouter, orderRouter } from "./api/routes/index.js";
 
 const app = express();
 
@@ -16,8 +16,9 @@ app.use(cookieParser());
 // Routes
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/cart", cartRouter)
+app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/profile", profileRouter);
+app.use("/api/v1/order", orderRouter);
 
 // MongoDB connection
 await connectDB();

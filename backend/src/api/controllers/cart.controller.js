@@ -272,6 +272,9 @@ export const deleteProductFromCart = async (req, res) => {
             return;
         }
 
+        activeOrder.amount -= cartItem.price;
+        activeOrder.totalAmount -= cartItem.price;
+
         await activeOrder.save();
 
         res.status(200).json({

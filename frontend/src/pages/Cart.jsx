@@ -26,6 +26,13 @@ function Cart() {
         navigate("/products");
     };
 
+    const handleProceedToCheckout = () => {
+        navigate("/cart/checkout", {
+            state: { fromCart: true },
+            replace: false,
+        });
+    };
+
     return (
         <>
             <title>Cart | Sweety</title>
@@ -63,7 +70,9 @@ function Cart() {
                                 <p className={s.cart_subtotal_label}>Subtotal:</p>
                                 <p className={s.cart_subtotal}>${subtotal.toFixed(2)}</p>
 
-                                <button className={s.cart_checkout_button}>PROCEED TO CHECKOUT</button>
+                                <button className={s.cart_checkout_button} onClick={handleProceedToCheckout}>
+                                    PROCEED TO CHECKOUT
+                                </button>
                             </div>
                         </>
                     ) : (
