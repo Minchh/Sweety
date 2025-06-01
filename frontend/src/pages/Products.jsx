@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "react-hot-toast"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -165,9 +166,9 @@ function Products() {
         const result = await addProductToCart(product._id);
 
         if (result.status === "success") {
-            alert(`${product.name} added to cart`);
-        } else {
-            alert("Failed to add product:", result.message);
+            toast.success("Product added to cart!");
+        } else if (result.code === 409) {
+            toast.success(`${result.message}`)
         }
     };
 
@@ -249,7 +250,6 @@ function Products() {
                                 {filters.map((category) => (
                                     <div className="category-group" key={category.id}>
                                         <input
-                                            defaultChecked={true}
                                             className="category-input"
                                             id={category.id}
                                             type="checkbox"

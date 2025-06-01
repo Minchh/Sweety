@@ -7,6 +7,7 @@ import { faUser, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import "../css/components/LoginActions.css";
 
 import { useAuthStore } from "../store/authStore.js";
+import { useCartStore } from "../store/cartStore.js";
 
 function LoginActions() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -14,13 +15,20 @@ function LoginActions() {
     const navigate = useNavigate();
     const { logout } = useAuthStore();
 
+    const { cartItems, getCartItems } = useCartStore();
+
+    // Get cart items on component mount
+    useEffect(() => {
+        getCartItems();
+    }, [getCartItems]);
+
+    // Calculate total quantity of items in cart
+    const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target)
-            ) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsDropdownOpen(false);
             }
         };
@@ -53,34 +61,23 @@ function LoginActions() {
     return (
         <ul className="navbar-actions">
             <li className="user-dropdown" ref={dropdownRef}>
-                <FontAwesomeIcon
-                    icon={faUser}
-                    onClick={handleUserClick}
-                    className="user-icon"
-                />
+                <FontAwesomeIcon icon={faUser} onClick={handleUserClick} className="user-icon" />
                 {isDropdownOpen && (
                     <div className="dropdown-menu">
-                        <button
-                            onClick={handleProfileClick}
-                            className="dropdown-item"
-                        >
+                        <button onClick={handleProfileClick} className="dropdown-item">
                             Profile
                         </button>
-                        <button
-                            onClick={handleLogoutClick}
-                            className="dropdown-item"
-                        >
+                        <button onClick={handleLogoutClick} className="dropdown-item">
                             Log out
                         </button>
                     </div>
                 )}
             </li>
             <li>
-                <FontAwesomeIcon
-                    icon={faShoppingCart}
-                    onClick={handleCartClick}
-                    className="cart-icon"
-                />
+                <FontAwesomeIcon icon={faShoppingCart} onClick={handleCartClick} className="cart-icon" />
+                {totalCartItems > 0 && (
+                    <span className="cart-badge">{totalCartItems > 99 ? "99+" : totalCartItems}</span>
+                )}
             </li>
         </ul>
     );

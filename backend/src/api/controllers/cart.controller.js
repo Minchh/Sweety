@@ -69,3 +69,42 @@ export const addProductToCart = async (req, res) => {
         });
     }
 };
+
+export const getCartItems = async (req, res) => {
+    const userId = req.userId;
+
+    try {
+        const activeOrder = await Order.findOne({
+            user: userId,
+        }).populate({
+            path: "cartItems",
+            populate: {
+                path: "product",
+                model: "Product",
+            },
+        });
+
+        if (!activeOrder) {
+            res.status(404).json({
+                code: 404,
+                status: "fail",
+                message: "Active order not found",
+            });
+            return;
+        }
+
+        res.status(200).json({
+            code: 200,
+            status: "success",
+            data: {
+                cartItems: activeOrder.cartItems,
+            },
+        });
+    } catch (err) {
+        res.status(500).json({
+            code: 500,
+            status: "error",
+            message: err.message,
+        });
+    }
+};

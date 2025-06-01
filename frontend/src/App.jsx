@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from "react-router";
 import { Toaster } from "react-hot-toast";
 
 import "./css/App.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
@@ -12,11 +14,42 @@ import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import PasswordForgot from "./pages/PasswordForgot.jsx";
 import EmailVerification from "./pages/EmailVerification";
-import { useAuthStore } from "./store/authStore.js";
 import PasswordReset from "./pages/PasswordReset.jsx";
+import Cart from "./pages/Cart.jsx";
+import { useAuthStore } from "./store/authStore.js";
+
+const ProtectedRoute = ({ children }) => {
+    const { isAuthenticated, user, isCheckingAuth } = useAuthStore();
+
+    if (isCheckingAuth) {
+        return (
+            <div className="page-container">
+                <div className="loading-layout">
+                    <FontAwesomeIcon className="loading-layout-icon" icon={faSpinner} />
+                </div>
+            </div>
+        );
+    }
+
+    if (!isAuthenticated || !user.isVerified) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return children;
+};
 
 const RedirectAuthenticatedUser = ({ children }) => {
-    const { isAuthenticated, user } = useAuthStore();
+    const { isAuthenticated, user, isCheckingAuth } = useAuthStore();
+
+    if (isCheckingAuth) {
+        return (
+            <div className="page-container">
+                <div className="loading-layout">
+                    <FontAwesomeIcon className="loading-layout-icon" icon={faSpinner} />
+                </div>
+            </div>
+        );
+    }
 
     if (isAuthenticated && user.isVerified) {
         return <Navigate to={"/home"} replace />;
@@ -44,6 +77,14 @@ function App() {
                 <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/contact-us" element={<ContactUs />} />
                 <Route
+                    path="/cart"
+                    element={
+                        <ProtectedRoute>
+                            <Cart />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
                     path="/login"
                     element={
                         <RedirectAuthenticatedUser>
@@ -60,10 +101,7 @@ function App() {
                     }
                 />
                 <Route path="/password-forgot" element={<PasswordForgot />} />
-                <Route
-                    path="/email-verification"
-                    element={<EmailVerification />}
-                />
+                <Route path="/email-verification" element={<EmailVerification />} />
                 <Route
                     path="/password-reset/:token"
                     element={
