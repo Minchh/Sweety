@@ -6,4 +6,6 @@ const orderRouter = express.Router();
 
 orderRouter.route("/").post(verifyToken, orderController.placeTheOrder);
 
+orderRouter.route("/").get(verifyToken, orderController.getOrdersByUser);
+
 export default orderRouter;

@@ -8,6 +8,7 @@ const API_URL = "http://localhost:3000/api/v1/order";
 axios.defaults.withCredentials = true;
 
 export const useOrderStore = create((set, get) => ({
+    orders: [],
     isLoading: false,
     error: null,
     message: null,
@@ -17,7 +18,7 @@ export const useOrderStore = create((set, get) => ({
         try {
             const response = await axios.post(`${API_URL}/`);
 
-            const activeOrder = response.data.data.activeOrder;
+            // const activeOrder = response.data.data.activeOrder;
             const newOrder = response.data.data.newOrder;
 
             set({
@@ -29,7 +30,21 @@ export const useOrderStore = create((set, get) => ({
 
             return response.data;
         } catch (err) {
-            set({ error: err.response?.data?.message || "Error placing data", isLoading: false });
+            set({ error: err.response?.data?.message || "Error placing order", isLoading: false });
+            throw err;
+        }
+    },
+
+    getOrders: async () => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axios.get(`${API_URL}/`);
+
+            set({ orders: response.data.data.orders, isLoading: false });
+
+            return response.data;
+        } catch (err) {
+            set({ error: err.response?.data?.message || "Error get orders", isLoading: false });
             throw err;
         }
     },

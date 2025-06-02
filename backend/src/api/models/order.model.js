@@ -46,6 +46,12 @@ const orderSchema = new mongoose.Schema(
                 required: true,
             },
         ],
+        placedTime: {
+            type: Date,
+        },
+        totalQuantity: {
+            type: Number,
+        }
     },
     {
         timestamps: true,
