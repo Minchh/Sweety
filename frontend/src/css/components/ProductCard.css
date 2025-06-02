@@ -9,7 +9,6 @@
 
 .product-image-container {
     position: relative;
-    height: 200px;
     overflow: hidden;
 }
 
@@ -51,6 +50,7 @@
     font-family: "Playfair Display";
     padding: 0.75rem;
     text-align: center;
+    margin-top: -2rem;
 }
 
 .product-name {

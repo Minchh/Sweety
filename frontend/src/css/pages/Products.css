@@ -1,7 +1,7 @@
 .products-container {
     font-family: "Poppins", sans-serif;
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 1fr 4fr;
     gap: 2rem;
     padding: 3rem 5rem;
     min-height: calc(100vh - 200px);
