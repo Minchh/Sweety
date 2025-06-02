@@ -18,6 +18,7 @@ import PasswordReset from "./pages/PasswordReset.jsx";
 import Cart from "./pages/Cart.jsx";
 import Profile from "./pages/Profile.jsx";
 import Checkout from "./pages/Checkout.jsx";
+import TrackOrder from "./pages/TrackOrder.jsx";
 import { useAuthStore } from "./store/authStore.js";
 
 const ProtectedRoute = ({ children }) => {
@@ -96,6 +97,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Profile />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/track-order"
+                    element={
+                        <ProtectedRoute>
+                            <TrackOrder />
                         </ProtectedRoute>
                     }
                 />

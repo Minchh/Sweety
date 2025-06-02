@@ -10,6 +10,7 @@ import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
 import { useProfileStore } from "../store/profileStore.js";
 import { useCartStore } from "../store/cartStore.js";
+import { useOrderStore } from "../store/orderStore.js";
 
 function Checkout() {
     const location = useLocation();
@@ -21,7 +22,8 @@ function Checkout() {
     });
     const navigate = useNavigate();
     const { getUserProfile, profile } = useProfileStore();
-    const { cartItems, getCartItems } = useCartStore();
+    const { cartItems, getCartItems, clearCart } = useCartStore();
+    const { placeTheOrder } = useOrderStore();
 
     if (!location.state?.fromCart) {
         return <Navigate to="/cart" replace />;
@@ -50,10 +52,13 @@ function Checkout() {
     const subtotal = cartItems.reduce((total, cartItem) => total + cartItem.price * cartItem.quantity, 0);
 
     const handlePlaceOrder = async () => {
+        await placeTheOrder();
         toast.success("Placed order successfully", { style: { fontFamily: "Poppins" } });
-        setTimeout(() => {
-            navigate("/home");
-        }, 1000);
+        navigate("/home", { replace: true });
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
     };
 
     return (
@@ -96,7 +101,7 @@ function Checkout() {
 
                     <div className={s.checkoutOrderContainer}>
                         {cartItems.map((cartItem) => (
-                            <div className={s.checkoutOrderRow}>
+                            <div key={cartItem.id} className={s.checkoutOrderRow}>
                                 <span className={s.checkoutOrderAmount}>
                                     {cartItem.quantity} x {cartItem.product.name}
                                 </span>
@@ -125,7 +130,21 @@ function Checkout() {
                         </div>
                     </div>
 
-                    <button type="submit" className={s.checkoutButton} onClick={handlePlaceOrder}>
+                    {formData.address === "" && (
+                        <p className="error-message">Address cannot be empty! Please go to your profile and fill it.</p>
+                    )}
+                    {formData.phoneNumber === "" && (
+                        <p className="error-message">
+                            Phone number cannot be empty! Please go to your profile and fill it.
+                        </p>
+                    )}
+
+                    <button
+                        disabled={formData.address === "" || formData.phoneNumber === ""}
+                        type="submit"
+                        className={s.checkoutButton}
+                        onClick={handlePlaceOrder}
+                    >
                         PLACE ORDER
                     </button>
                 </div>

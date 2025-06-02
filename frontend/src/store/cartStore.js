@@ -30,10 +30,13 @@ export const useCartStore = create((set, get) => ({
 
             set({
                 cartItems: response.data.data.cartItems || [],
+                activeOrder: response.data.data.activeOrder || null,
                 totalAmount: totalAmount,
                 totalItems: totalItems,
                 isLoading: false,
             });
+
+            return response.data;
         } catch (err) {
             if (err.response?.status === 404) {
                 set({
@@ -64,6 +67,7 @@ export const useCartStore = create((set, get) => ({
                 set((state) => ({
                     cartItems: [...state.cartItems, newCartItem],
                     totalAmount: state.totalAmount + newCartItem.price,
+                    totalItems: state.totalItems + 1,
                     activeOrder: {
                         ...state.activeOrder,
                         totalAmount: state.totalAmount + newCartItem.price,
@@ -90,13 +94,21 @@ export const useCartStore = create((set, get) => ({
         try {
             const response = await axios.post(`${API_URL}/increase/${productId}`);
 
-            set((state) => ({
-                cartItems: state.cartItems.map((item) =>
+            set((state) => {
+                const updatedCartItems = state.cartItems.map((item) =>
                     item.product._id === productId ? { ...item, quantity: item.quantity + 1 } : item
-                ),
-                isLoading: false,
-            }));
+                );
 
+                const newTotalAmount = updatedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+                const newTotalItems = updatedCartItems.reduce((total, item) => total + item.quantity, 0);
+
+                return {
+                    cartItems: updatedCartItems,
+                    totalAmount: newTotalAmount,
+                    totalItems: newTotalItems,
+                    isLoading: false,
+                };
+            });
             return response.data;
         } catch (err) {
             set({ error: err.response?.data?.message || "Error increasing product quantity", isLoading: false });
@@ -109,12 +121,21 @@ export const useCartStore = create((set, get) => ({
         try {
             const response = await axios.post(`${API_URL}/decrease/${productId}`);
 
-            set((state) => ({
-                cartItems: state.cartItems.map((item) =>
+            set((state) => {
+                const updatedCartItems = state.cartItems.map((item) =>
                     item.product._id === productId ? { ...item, quantity: item.quantity - 1 } : item
-                ),
-                isLoading: false,
-            }));
+                );
+
+                const newTotalAmount = updatedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+                const newTotalItems = updatedCartItems.reduce((total, item) => total + item.quantity, 0);
+
+                return {
+                    cartItems: updatedCartItems,
+                    totalAmount: newTotalAmount,
+                    totalItems: newTotalItems,
+                    isLoading: false,
+                };
+            });
 
             return response.data;
         } catch (err) {
@@ -128,15 +149,39 @@ export const useCartStore = create((set, get) => ({
         try {
             const response = await axios.delete(`${API_URL}/${cartItemId}`);
 
-            set((state) => ({
-                cartItems: state.cartItems.filter((item) => item.id !== cartItemId),
-                isLoading: false,
-            }));
+            set((state) => {
+                const updatedCartItems = state.cartItems.filter((item) => item.id !== cartItemId);
+
+                const newTotalAmount = updatedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+                const newTotalItems = updatedCartItems.reduce((total, item) => total + item.quantity, 0);
+
+                return {
+                    cartItems: updatedCartItems,
+                    totalAmount: newTotalAmount,
+                    totalItems: newTotalItems,
+                    isLoading: false,
+                };
+            });
 
             return response.data;
         } catch (err) {
             set({ error: err.response?.data?.message || "Error deleting product from cart", isLoading: false });
             throw err;
         }
+    },
+
+    handleOrderPlaced: (newActiveOrder) => {
+        set({
+            activeOrder: newActiveOrder,
+            cartItems: newActiveOrder?.cartItems || [],
+            totalAmount: newActiveOrder?.totalAmount || 0,
+            totalItems: newActiveOrder?.cartItems?.reduce((total, item) => total + item.quantity, 0) || 0,
+            lastOrderUpdate: Date.now(), // Trigger re-render
+        });
+    },
+
+    refreshCart: async () => {
+        const { getCartItems } = get();
+        await getCartItems();
     },
 }));

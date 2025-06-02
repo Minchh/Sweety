@@ -8,13 +8,11 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
 
-import { useCartStore } from "../store/cartStore.js";
 import CartItem from "../components/CartItem.jsx";
+import { useCartStore } from "../store/cartStore.js";
 
 function Cart() {
-    const { cartItems, getCartItems, isLoading } = useCartStore();
-
-    const subtotal = cartItems.reduce((total, cartItem) => total + cartItem.price * cartItem.quantity, 0);
+    const { cartItems, totalAmount, getCartItems, isLoading } = useCartStore();
 
     useEffect(() => {
         getCartItems();
@@ -54,13 +52,11 @@ function Cart() {
                                 <div className={`${s.header_cell}`}>Subtotal</div>
                             </div>
 
-                            <ul className={s.cart_items}>
-                                {cartItems.map((cartItem) => (
-                                    <li key={cartItem.id}>
-                                        <CartItem cartItem={cartItem} />
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className={s.cart_items}>
+                                {cartItems.map((cartItem) => {
+                                    return <CartItem key={cartItem.id} cartItem={cartItem} />;
+                                })}
+                            </div>
 
                             <div className={s.cart_actions_container}>
                                 <button className={s.cart_shopping_button} onClick={handleContinueShopping}>
@@ -68,7 +64,7 @@ function Cart() {
                                 </button>
 
                                 <p className={s.cart_subtotal_label}>Subtotal:</p>
-                                <p className={s.cart_subtotal}>${subtotal.toFixed(2)}</p>
+                                <p className={s.cart_subtotal}>${totalAmount.toFixed(2)}</p>
 
                                 <button className={s.cart_checkout_button} onClick={handleProceedToCheckout}>
                                     PROCEED TO CHECKOUT

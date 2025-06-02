@@ -76,6 +76,7 @@ export const getCartItems = async (req, res) => {
     try {
         const activeOrder = await Order.findOne({
             user: userId,
+            orderStatus: "pending",
         }).populate({
             path: "cartItems",
             populate: {
@@ -108,7 +109,7 @@ export const getCartItems = async (req, res) => {
             code: 200,
             status: "success",
             data: {
-                ...activeOrder._doc,
+                activeOrder,
                 cartItems,
             },
         });

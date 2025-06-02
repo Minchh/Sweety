@@ -98,7 +98,7 @@ export const updateUserProfile = async (req, res) => {
 
         res.status(200).json({
             code: 200,
-            success: true,
+            status: "success",
             message: "Profile updated successfully",
             data: {
                 userProfile: {
@@ -109,11 +109,11 @@ export const updateUserProfile = async (req, res) => {
     } catch (err) {
         // Handle mongoose validation errors
         if (err.name === "ValidationError") {
-            const validationErrors = Object.values(error.errors).map((err) => err.message);
+            const validationErrors = Object.values(err.errors).map((err) => err.message);
             return res.status(400).json({
                 code: 400,
                 status: "error",
-                message: "Validation failed",
+                message: "Full Name, Phone Number, or Address is wrong! Validation Failed!",
                 errors: validationErrors,
             });
         }

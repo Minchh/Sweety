@@ -10,7 +10,7 @@ import Footer from "../components/Footer.jsx";
 import { useProfileStore } from "../store/profileStore.js";
 
 function Profile() {
-    const { getUserProfile, updateUserProfile, isLoading, profile } = useProfileStore();
+    const { getUserProfile, updateUserProfile, isLoading, profile, error, message } = useProfileStore();
 
     const [formData, setFormData] = useState({
         fullName: "",
@@ -61,10 +61,8 @@ function Profile() {
 
     const handleSaveChanges = async (e) => {
         e.preventDefault();
-        console.log("Form submitted:", formData);
-        // TODO: Add update logic here
         const result = await updateUserProfile(formData.fullName, formData.phoneNumber, formData.address);
-
+        console.log(result);
         if (result.status === "success") {
             toast.success("Saved changes successfully", {
                 style: {
@@ -127,6 +125,8 @@ function Profile() {
                                         onChange={handleInputChange}
                                     />
                                 </div>
+
+                                {error && <p className="error-message">{error}</p>}
 
                                 <button type="submit" className={s.profileButton} disabled={!hasChanges() || isLoading}>
                                     {isLoading ? (

@@ -2,10 +2,16 @@ import { Order, User } from "../models/index.js";
 
 export const placeTheOrder = async (req, res) => {
     const userId = req.userId;
-    const { address } = req.params;
 
     try {
-        const activeOrder = await Order.findOne({ user: userId, orderStatus: "pending" });
+        const activeOrder = await Order.findOne({ user: userId, orderStatus: "pending" }).populate({
+            path: "cartItems",
+            populate: {
+                path: "product",
+                model: "Product",
+            },
+        });
+        
         const user = await User.findById(userId);
 
         if (!activeOrder || !user) {
@@ -17,7 +23,7 @@ export const placeTheOrder = async (req, res) => {
             return;
         }
 
-        activeOrder.address = address;
+        activeOrder.address = user.address;
         activeOrder.orderStatus = "placed";
 
         await activeOrder.save();

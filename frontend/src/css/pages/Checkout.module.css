@@ -111,8 +111,12 @@
     cursor: pointer;
 }
 
-.checkoutButton:hover {
+.checkoutButton:hover:not(:disabled) {
     background: transparent;
     border: 1px solid #f0f0f0;
     color: #f0f0f0;
+}
+
+.checkoutButton:disabled {
+    cursor: not-allowed;
 }

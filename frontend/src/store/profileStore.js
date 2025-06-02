@@ -30,6 +30,7 @@ export const useProfileStore = create((set, get) => ({
     updateUserProfile: async (fullName, phoneNumber, address) => {
         set({ isLoading: true, error: null });
         try {
+            console.log(fullName, phoneNumber, address);
             const response = await axios.patch(`${API_URL}/`, { fullName, phoneNumber, address });
 
             set({
@@ -41,7 +42,7 @@ export const useProfileStore = create((set, get) => ({
             return response.data;
         } catch (err) {
             set({ error: err.response?.data?.message, isLoading: false });
-            throw err;
+            return err.response;
         }
     },
 }));

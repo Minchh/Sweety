@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { toast } from "react-hot-toast"
+import { toast } from "react-hot-toast";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -166,9 +166,9 @@ function Products() {
         const result = await addProductToCart(product._id);
 
         if (result.status === "success") {
-            toast.success("Product added to cart!");
+            toast.success("Product added to cart!", { style: { fontFamily: "Poppins" } });
         } else if (result.code === 409) {
-            toast.success(`${result.message}`)
+            toast.success(`${result.message}`, { style: { fontFamily: "Poppins" } });
         }
     };
 
