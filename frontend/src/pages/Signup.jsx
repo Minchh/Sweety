@@ -4,13 +4,7 @@ import { useNavigate } from "react-router";
 import "../css/pages/Signup.css";
 import sweetyLogo from "../assets/sweety-logo.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faEnvelope,
-    faKey,
-    faPhone,
-    faUser,
-    faSpinner,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faKey, faPhone, faUser, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import Input from "../components/Input.jsx";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter.jsx";
@@ -23,6 +17,7 @@ function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
     const navigate = useNavigate();
 
@@ -37,16 +32,32 @@ function Signup() {
         setter(e.target.value);
     };
 
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        if (error) clearError();
+        setPassword(newPassword);
+
+        if (passwordError) setPasswordError("");
+    };
+
+    const validatePassword = () => {
+        if (password.length < 6) {
+            setPasswordError("Password must be at least 6 characters long");
+            return false;
+        }
+        setPasswordError("");
+        return true;
+    };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
+
+        if (!validatePassword()) {
+            return;
+        }
+
         try {
-            await signup(
-                fullName,
-                phoneNumber,
-                email,
-                password,
-                confirmPassword
-            );
+            await signup(fullName, phoneNumber, email, password, confirmPassword);
             navigate("/email-verification");
         } catch (err) {
             console.error(err);
@@ -69,12 +80,7 @@ function Signup() {
 
                     <form className="signup-form" onSubmit={handleSignUp}>
                         <label htmlFor="">Full Name</label>
-                        <Input
-                            icon={faUser}
-                            type="text"
-                            value={fullName}
-                            onChange={handleInputChange(setFullName)}
-                        />
+                        <Input icon={faUser} type="text" value={fullName} onChange={handleInputChange(setFullName)} />
 
                         <label htmlFor="">Phone Number</label>
                         <Input
@@ -85,20 +91,10 @@ function Signup() {
                         />
 
                         <label htmlFor="">Email</label>
-                        <Input
-                            icon={faEnvelope}
-                            type="text"
-                            value={email}
-                            onChange={handleInputChange(setEmail)}
-                        />
+                        <Input icon={faEnvelope} type="text" value={email} onChange={handleInputChange(setEmail)} />
 
                         <label htmlFor="">Password</label>
-                        <Input
-                            icon={faKey}
-                            type="password"
-                            value={password}
-                            onChange={handleInputChange(setPassword)}
-                        />
+                        <Input icon={faKey} type="password" value={password} onChange={handlePasswordChange} />
                         <PasswordStrengthMeter password={password} />
 
                         <label htmlFor="">Confirm Password</label>
@@ -109,21 +105,11 @@ function Signup() {
                             onChange={handleInputChange(setConfirmPassword)}
                         />
 
+                        {passwordError && <p className="error-message">{passwordError}</p>}
                         {error && <p className="error-message">{error}</p>}
 
-                        <button
-                            type="submit"
-                            className="signup-button"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <FontAwesomeIcon
-                                    className="loading"
-                                    icon={faSpinner}
-                                />
-                            ) : (
-                                "Sign Up"
-                            )}
+                        <button type="submit" className="signup-button" disabled={isLoading}>
+                            {isLoading ? <FontAwesomeIcon className="loading" icon={faSpinner} /> : "Sign Up"}
                         </button>
                     </form>
 

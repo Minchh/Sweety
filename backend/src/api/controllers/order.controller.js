@@ -95,3 +95,41 @@ export const getOrdersByUser = async (req, res) => {
         });
     }
 };
+
+// ADMIN
+export const getAllOrdersFromUsers = async (req, res) => {
+    try {
+        const orders = await Order.find({})
+            .sort("-placedTime -createdAt")
+            .populate({
+                path: "cartItems",
+                populate: {
+                    path: "product",
+                    model: "Product",
+                },
+            });
+        
+        if (!orders) {
+            res.status(404).json({
+                code: 404,
+                status: "fail",
+                message: "No orders found",
+            });
+            return;
+        }
+
+        res.status(200).json({
+            code: 200,
+            status: "success",
+            data: {
+                orders,
+            },
+        });
+    } catch (err) {
+        res.status(500).json({
+            code: 500,
+            status: "error",
+            message: err.message,
+        });
+    }
+};

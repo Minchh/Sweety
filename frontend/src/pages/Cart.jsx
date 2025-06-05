@@ -12,7 +12,11 @@ import CartItem from "../components/CartItem.jsx";
 import { useCartStore } from "../store/cartStore.js";
 
 function Cart() {
-    const { cartItems, totalAmount, getCartItems, isLoading } = useCartStore();
+    // Use specific selectors to prevent unnecessary re-renders
+    const cartItems = useCartStore((state) => state.cartItems);
+    const totalAmount = useCartStore((state) => state.totalAmount);
+    const isLoading = useCartStore((state) => state.isLoading);
+    const getCartItems = useCartStore((state) => state.getCartItems);
 
     useEffect(() => {
         getCartItems();

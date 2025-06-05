@@ -90,56 +90,79 @@ export const useCartStore = create((set, get) => ({
     },
 
     increaseProductQuantity: async (productId) => {
-        set({ isLoading: true, error: null });
+        set((state) => {
+            const updatedCartItems = state.cartItems.map((item) =>
+                item.product._id === productId ? { ...item, quantity: item.quantity + 1 } : item
+            );
+
+            const newTotalAmount = updatedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+            const newTotalItems = updatedCartItems.reduce((total, item) => total + item.quantity, 0);
+
+            return {
+                cartItems: updatedCartItems,
+                totalAmount: newTotalAmount,
+                totalItems: newTotalItems,
+            };
+        });
+
         try {
             const response = await axios.post(`${API_URL}/increase/${productId}`);
-
-            set((state) => {
-                const updatedCartItems = state.cartItems.map((item) =>
-                    item.product._id === productId ? { ...item, quantity: item.quantity + 1 } : item
-                );
-
-                const newTotalAmount = updatedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-                const newTotalItems = updatedCartItems.reduce((total, item) => total + item.quantity, 0);
-
-                return {
-                    cartItems: updatedCartItems,
-                    totalAmount: newTotalAmount,
-                    totalItems: newTotalItems,
-                    isLoading: false,
-                };
-            });
             return response.data;
         } catch (err) {
-            set({ error: err.response?.data?.message || "Error increasing product quantity", isLoading: false });
+            set((state) => {
+                const revertedCartItems = state.cartItems.map((item) =>
+                    item.product._id === productId ? { ...item, quantity: item.quantity - 1 } : item
+                );
+
+                const newTotalAmount = revertedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+                const newTotalItems = revertedCartItems.reduce((total, item) => total + item.quantity, 0);
+
+                return {
+                    cartItems: revertedCartItems,
+                    totalAmount: newTotalAmount,
+                    totalItems: newTotalItems,
+                    error: err.response?.data?.message || "Error increasing product quantity",
+                };
+            });
             throw err;
         }
     },
 
     decreaseProductQuantity: async (productId) => {
-        set({ isLoading: true, error: null });
+        set((state) => {
+            const updatedCartItems = state.cartItems.map((item) =>
+                item.product._id === productId ? { ...item, quantity: item.quantity - 1 } : item
+            );
+
+            const newTotalAmount = updatedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+            const newTotalItems = updatedCartItems.reduce((total, item) => total + item.quantity, 0);
+
+            return {
+                cartItems: updatedCartItems,
+                totalAmount: newTotalAmount,
+                totalItems: newTotalItems,
+            };
+        });
+
         try {
             const response = await axios.post(`${API_URL}/decrease/${productId}`);
-
-            set((state) => {
-                const updatedCartItems = state.cartItems.map((item) =>
-                    item.product._id === productId ? { ...item, quantity: item.quantity - 1 } : item
-                );
-
-                const newTotalAmount = updatedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-                const newTotalItems = updatedCartItems.reduce((total, item) => total + item.quantity, 0);
-
-                return {
-                    cartItems: updatedCartItems,
-                    totalAmount: newTotalAmount,
-                    totalItems: newTotalItems,
-                    isLoading: false,
-                };
-            });
-
             return response.data;
         } catch (err) {
-            set({ error: err.response?.data?.message || "Error increasing product quantity", isLoading: false });
+            set((state) => {
+                const revertedCartItems = state.cartItems.map((item) =>
+                    item.product._id === productId ? { ...item, quantity: item.quantity + 1 } : item
+                );
+
+                const newTotalAmount = revertedCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+                const newTotalItems = revertedCartItems.reduce((total, item) => total + item.quantity, 0);
+
+                return {
+                    cartItems: revertedCartItems,
+                    totalAmount: newTotalAmount,
+                    totalItems: newTotalItems,
+                    error: err.response?.data?.message || "Error decreasing product quantity",
+                };
+            });
             throw err;
         }
     },

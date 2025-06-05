@@ -16,6 +16,7 @@ function LoginActions() {
     const { logout } = useAuthStore();
 
     const { totalItems, getCartItems } = useCartStore();
+    const { user } = useAuthStore();
 
     useEffect(() => {
         getCartItems();
@@ -53,6 +54,16 @@ function LoginActions() {
         navigate("/track-order", { replace: true });
     };
 
+    const handleShowOrders = () => {
+        setIsDropdownOpen(false);
+        navigate("/show-orders", { replace: true });
+    };
+
+    const handleNewProduct = () => {
+        setIsDropdownOpen(false);
+        navigate("/new-product", { replace: true });
+    };
+
     const handleLogoutClick = () => {
         setIsDropdownOpen(false);
         logout();
@@ -68,9 +79,25 @@ function LoginActions() {
                         <button onClick={handleProfileClick} className={s.dropdownItem}>
                             Profile
                         </button>
-                        <button onClick={handleTrackOrderClick} className={s.dropdownItem}>
-                            Track Order
-                        </button>
+
+                        {user.role === "admin" ? (
+                            <button onClick={handleNewProduct} className={s.dropdownItem}>
+                                New Product
+                            </button>
+                        ) : (
+                            <></>
+                        )}
+
+                        {user.role === "admin" ? (
+                            <button onClick={handleShowOrders} className={s.dropdownItem}>
+                                Show Orders
+                            </button>
+                        ) : (
+                            <button onClick={handleTrackOrderClick} className={s.dropdownItem}>
+                                Track Order
+                            </button>
+                        )}
+
                         <button onClick={handleLogoutClick} className={s.dropdownItem}>
                             Log out
                         </button>

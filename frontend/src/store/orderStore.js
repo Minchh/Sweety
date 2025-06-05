@@ -48,4 +48,18 @@ export const useOrderStore = create((set, get) => ({
             throw err;
         }
     },
+
+    getOrdersAdmin: async () => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axios.get(`${API_URL}/admin`);
+
+            set({ orders: response.data.data.orders, isLoading: false });
+
+            return response.data;
+        } catch (err) {
+            set({ error: err.response?.data?.message || "Error get orders", isLoading: false });
+            throw err;
+        }
+    },
 }));

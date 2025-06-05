@@ -8,4 +8,6 @@ orderRouter.route("/").post(verifyToken, orderController.placeTheOrder);
 
 orderRouter.route("/").get(verifyToken, orderController.getOrdersByUser);
 
+orderRouter.route("/admin").get(verifyToken, orderController.getAllOrdersFromUsers);
+
 export default orderRouter;

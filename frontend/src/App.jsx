@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 import "./css/App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,6 +20,8 @@ import Profile from "./pages/Profile.jsx";
 import Checkout from "./pages/Checkout.jsx";
 import TrackOrder from "./pages/TrackOrder.jsx";
 import { useAuthStore } from "./store/authStore.js";
+import ShowOrder from "./pages/ShowOrder.jsx";
+import NewProduct from "./pages/NewProduct.jsx";
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, user, isCheckingAuth } = useAuthStore();
@@ -56,6 +58,34 @@ const RedirectAuthenticatedUser = ({ children }) => {
 
     if (isAuthenticated && user.isVerified) {
         return <Navigate to={"/home"} replace />;
+    }
+
+    return children;
+};
+
+const RedirectNonAdminUser = ({ children }) => {
+    const { isAuthenticated, isCheckingAuth, user } = useAuthStore();
+
+    // Show loading while checking authentication or if user is null
+    if (isCheckingAuth || !user) {
+        return (
+            <div className="page-container">
+                <div className="loading-layout">
+                    <FontAwesomeIcon className="loading-layout-icon" icon={faSpinner} />
+                </div>
+            </div>
+        );
+    }
+
+    // Redirect to login if not authenticated
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
+
+    // Check if user has admin role (user is guaranteed to exist here)
+    if (user.role !== "admin") {
+        toast.error("You are unauthorized to access this functionality");
+        return <Navigate to="/home" replace />;
     }
 
     return children;
@@ -106,6 +136,22 @@ function App() {
                         <ProtectedRoute>
                             <TrackOrder />
                         </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/show-orders"
+                    element={
+                        <RedirectNonAdminUser>
+                            <ShowOrder />
+                        </RedirectNonAdminUser>
+                    }
+                />{" "}
+                <Route
+                    path="/new-product"
+                    element={
+                        <RedirectNonAdminUser>
+                            <NewProduct />
+                        </RedirectNonAdminUser>
                     }
                 />
                 <Route

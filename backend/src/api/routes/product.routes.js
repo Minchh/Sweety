@@ -1,6 +1,6 @@
 import express from "express";
 import { productController } from "../controllers/index.js";
-import { verifyToken } from "../middlewares/index.js";
+import { checkAdmin, verifyToken } from "../middlewares/index.js";
 
 const productRouter = express.Router();
 
@@ -8,13 +8,14 @@ const productRouter = express.Router();
 productRouter
     .route("/")
     .get(productController.getProducts)
-    .post(verifyToken, productController.createProducts);
+    // .post(verifyToken, checkAdmin, productController.createProducts);
+    .post(verifyToken, checkAdmin, productController.createNewProductFromForm);
 
 // /api/v1/products/id
 productRouter
     .route("/:id")
     .get(productController.getProduct)
-    .patch(verifyToken, productController.updateProduct)
-    .delete(verifyToken, productController.deleteProduct);
+    .patch(verifyToken, checkAdmin, productController.updateProduct)
+    .delete(verifyToken, checkAdmin, productController.deleteProduct);
 
 export default productRouter;

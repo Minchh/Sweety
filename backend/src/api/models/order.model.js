@@ -48,6 +48,7 @@ const orderSchema = new mongoose.Schema(
         ],
         placedTime: {
             type: Date,
+            index: true,
         },
         totalQuantity: {
             type: Number,

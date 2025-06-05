@@ -114,6 +114,40 @@ export const useProductsStore = create((set, get) => ({
         }
     },
 
+    // Create new product (Admin)
+    createNewProduct: async (name, price, category, imageName, available, stock) => {
+        set({ isLoading: true, error: null });
+        try {
+            const productData = {
+                name,
+                price,
+                category,
+                imageName,
+                available,
+                stock,
+            };
+
+            const response = await axios.post(`${API_URL}/`, productData);
+
+            await get().getProducts();
+
+            set({
+                isLoading: false,
+                error: null,
+                message: "Product created successfully",
+            });
+
+            return response.data.data.newProduct;
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || "Error creating product";
+            set({
+                error: errorMessage,
+                isLoading: false,
+            });
+            throw err;
+        }
+    },
+
     searchProducts: async (term) => {
         set({ searchTerm: term, currentPage: 1 });
         await get().getProducts();

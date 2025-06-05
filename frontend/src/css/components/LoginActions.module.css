@@ -45,7 +45,7 @@
 .dropdownItem {
     display: block;
     width: 100%;
-    padding: 8px 12px;
+    padding: 16px 24px;
     background: transparent;
     border: none;
     color: #f0f0f0;
@@ -93,13 +93,14 @@
 
 .cartBadge {
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: -12px;
+    right: -12px;
     background: linear-gradient(135deg, #ff4444, #cc3333);
     color: #ffffff;
-    border-radius: 10px;
-    min-width: 12px;
-    height: 12px;
+    border-radius: 999999px;
+    min-width: 16px;
+    height: 16px;
+    padding: 12px 8px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -168,6 +168,46 @@ export async function createProducts(req, res) {
     }
 }
 
+// Create product from UI form
+export const createNewProductFromForm = async (req, res) => {
+    const { name, price, category, imageName, available, stock } = req.body;
+
+    try {
+        const product = await Product.findOne({ name: name });
+        if (product) {
+            res.status(400).json({
+                code: 400,
+                status: "fail",
+                message: "Product with this name already existed",
+            });
+            return;
+        }
+
+        const newProduct = await Product.create({
+            name,
+            price,
+            category,
+            imageURL: `/products/${imageName}`,
+            available,
+            stock,
+        });
+
+        res.status(201).json({
+            code: 201,
+            status: "success",
+            data: {
+                newProduct,
+            },
+        });
+    } catch (err) {
+        res.status(500).json({
+            code: 500,
+            status: "error",
+            message: err.message,
+        });
+    }
+};
+
 // Update product by Id
 export async function updateProduct(req, res) {
     try {

@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faX } from "@fortawesome/free-solid-svg-icons";
 
@@ -6,20 +8,22 @@ import s from "../css/components/CartItem.module.css";
 import { useCartStore } from "../store/cartStore.js";
 
 function CartItem({ cartItem }) {
-    const { increaseProductQuantity, decreaseProductQuantity, deleteProductFromCart } = useCartStore();
+    const increaseProductQuantity = useCartStore((state) => state.increaseProductQuantity);
+    const decreaseProductQuantity = useCartStore((state) => state.decreaseProductQuantity);
+    const deleteProductFromCart = useCartStore((state) => state.deleteProductFromCart);
 
-    const increaseQuantity = () => {
+    const increaseQuantity = useCallback(() => {
         increaseProductQuantity(cartItem.product._id);
-    };
+    }, [increaseProductQuantity, cartItem.product._id]);
 
-    const decreaseQuantity = () => {
+    const decreaseQuantity = useCallback(() => {
         decreaseProductQuantity(cartItem.product._id);
-    };
+    }, [decreaseProductQuantity, cartItem.product._id]);
 
-    const handleDeleteProductFromCart = async () => {
+    const handleDeleteProductFromCart = useCallback(async () => {
         console.log(cartItem);
         await deleteProductFromCart(cartItem.id);
-    }
+    }, [deleteProductFromCart, cartItem.id, cartItem]);
 
     return (
         <div className={s.cart_item_row}>

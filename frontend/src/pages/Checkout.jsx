@@ -54,7 +54,7 @@ function Checkout() {
     const handlePlaceOrder = async () => {
         await placeTheOrder();
         toast.success("Placed order successfully", { style: { fontFamily: "Poppins" } });
-        navigate("/home", { replace: true });
+        navigate("/track-order", { replace: true });
         window.scrollTo({
             top: 0,
             behavior: "smooth",

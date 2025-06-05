@@ -15,14 +15,22 @@ import {
 import NavBar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
 import { useOrderStore } from "../store/orderStore.js";
+import { useProfileStore } from "../store/profileStore.js";
 
-function TrackOrder() {
+function ShowOrder() {
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const { orders, getOrders, isLoading } = useOrderStore();
+    const { orders, getOrdersAdmin, isLoading } = useOrderStore();
+    const { profile, getUserProfile } = useProfileStore();
 
     useEffect(() => {
-        getOrders();
-    }, [getOrders]);
+        getUserProfile();
+    }, [getUserProfile]);
+
+    useEffect(() => {
+        if (profile?.role === "admin") {
+            getOrdersAdmin();
+        }
+    }, [profile, getOrdersAdmin]);
 
     const getStatusIcon = (status) => {
         const iconProps = { size: 20, className: "text-amber-400" };
@@ -34,6 +42,8 @@ function TrackOrder() {
                 return <FontAwesomeIcon icon={faTruck} {...iconProps} />;
             case "delivered":
                 return <FontAwesomeIcon icon={faBox} {...iconProps} />;
+            default:
+                return <FontAwesomeIcon icon={faClock} {...iconProps} />;
         }
     };
 
@@ -51,7 +61,7 @@ function TrackOrder() {
         setSelectedOrder(selectedOrder?._id === order._id ? null : order);
     };
 
-    if (isLoading) {
+    if (isLoading || !profile) {
         return (
             <div className="page-container">
                 <div className="loading-layout">
@@ -61,9 +71,27 @@ function TrackOrder() {
         );
     }
 
+    console.log(orders);
+
+    if (profile.role !== "admin") {
+        return (
+            <div className="page-container">
+                <NavBar />
+                <div className={s.orderTrackContainer}>
+                    <div className={s.orderTrackNotFoundContainer}>
+                        <FontAwesomeIcon icon={faBox} size="3x" className={s.boxIcon} />
+                        <h3>Access Denied</h3>
+                        <p>You don't have permission to view this page.</p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
     return (
         <>
-            <title>Track Orders | Sweety</title>
+            <title>Show Orders | Sweety</title>
 
             <div className="page-container">
                 <NavBar />
@@ -71,8 +99,8 @@ function TrackOrder() {
                 <div className={s.orderTrackContainer}>
                     {/* Header */}
                     <div className={s.orderTrackHeader}>
-                        <h1>Your Orders</h1>
-                        <p>Track all your orders</p>
+                        <h1>All Orders From Users</h1>
+                        <p>Track all orders</p>
                     </div>
 
                     {/* Orders List */}
@@ -98,28 +126,36 @@ function TrackOrder() {
                                                 <span className={s.orderTrackId}>{order.trackingId}</span>
                                             </div>
 
-                                            <button
-                                                onClick={() => handleViewDetails(order)}
-                                                className={s.orderTrackDetailsButton}
-                                            >
-                                                {selectedOrder?._id === order._id ? (
-                                                    <div>
-                                                        <FontAwesomeIcon className={s.eyeIcon} icon={faEye} size="sm" />
+                                            {order.orderStatus !== "pending" ? (
+                                                <button
+                                                    onClick={() => handleViewDetails(order)}
+                                                    className={s.orderTrackDetailsButton}
+                                                >
+                                                    {selectedOrder?._id === order._id ? (
+                                                        <div>
+                                                            <FontAwesomeIcon
+                                                                className={s.eyeIcon}
+                                                                icon={faEye}
+                                                                size="sm"
+                                                            />
 
-                                                        <span>Hide Details</span>
-                                                    </div>
-                                                ) : (
-                                                    <div>
-                                                        <FontAwesomeIcon
-                                                            className={s.eyeIcon}
-                                                            icon={faEyeSlash}
-                                                            size="sm"
-                                                        />
+                                                            <span>Hide Details</span>
+                                                        </div>
+                                                    ) : (
+                                                        <div>
+                                                            <FontAwesomeIcon
+                                                                className={s.eyeIcon}
+                                                                icon={faEyeSlash}
+                                                                size="sm"
+                                                            />
 
-                                                        <span>View Details</span>
-                                                    </div>
-                                                )}
-                                            </button>
+                                                            <span>View Details</span>
+                                                        </div>
+                                                    )}
+                                                </button>
+                                            ) : (
+                                                <div></div>
+                                            )}
                                         </div>
 
                                         <div className={s.orderTrackInfo}>
@@ -203,4 +239,4 @@ function TrackOrder() {
     );
 }
 
-export default TrackOrder;
+export default ShowOrder;

@@ -1,5 +1,6 @@
 .orderTrackContainer {
     width: 100%;
+    min-height: 100vh;
     position: relative;
     z-index: 10;
     padding: 3rem 1rem 3rem 1rem;
@@ -40,22 +41,23 @@
     border-width: 1px;
     text-align: center;
     backdrop-filter: blur(10px);
+    color: #f0f0f0;
 }
 
 .boxIcon {
     margin-bottom: 1rem;
-    color: #6b7280;
+    color: #f0f0f0;
 }
 
 .orderTrackNotFoundContainer h3 {
     margin-bottom: 0.5rem;
     font-size: 1.25rem;
     line-height: 1.75rem;
-    color: #9ca3af;
+    color: #f0f0f0;
 }
 
 .orderTrackNotFoundContainer p {
-    color: #6b7280;
+    color: #f0f0f0;
 }
 
 .orderTrackCard {
@@ -129,6 +131,8 @@
 }
 
 .eyeIcon {
+    font-size: 16px;
+    margin-right: 4px;
 }
 
 .orderTrackDetailsButton span {
